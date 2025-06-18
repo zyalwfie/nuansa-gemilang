@@ -270,7 +270,7 @@
                 const form = document.querySelector('#deleteProductForm');
                 const slug = this.getAttribute('data-slug');
 
-                form.action = `/dashboard/admin/products/destroy/${slug}`;
+                form.action = `<?= base_url() ?>dashboard/admin/products/destroy/${slug}`;
             });
         });
     });

@@ -11,7 +11,7 @@
         <div class="row justify-content-between">
             <div class="col-lg-5">
                 <div class="intro-excerpt">
-                    <h1>Nuansa Baru untuk <span clsas="d-block">Rumahmu</span></h1>
+                    <h1>Nuansa Gemilang</h1>
                     <p class="mb-4">Hadirkan sentuhan elegan dan kenyamanan maksimal dengan bean bag bergaya modern yang menyatu sempurna dengan interior vibe kamu.</p>
                     <p><a href="<?= base_url(route_to('landing.shop')) ?>" class="btn btn-secondary me-2">Belanja</a><a href="<?= in_groups('admin') ? base_url(route_to('admin.index')) : base_url(route_to('user.index')) ?>" class="btn btn-white-outline">Jelajahi</a></p>
                 </div>

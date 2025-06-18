@@ -190,7 +190,7 @@
                 const form = document.querySelector('#deleteProductForm');
                 const username = this.getAttribute('data-username');
 
-                form.action = `/dashboard/admin/users/destroy/${username}`;
+                form.action = `<?= base_url() ?>dashboard/admin/users/destroy/${username}`;
             });
         });
     })
