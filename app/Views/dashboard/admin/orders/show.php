@@ -164,7 +164,7 @@
                 <div class="modal-body">Pilih "Setujui" di bawah ini jika pesanan sudah dibayar.</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Batalkan</button>
-                    <a class="btn btn-primary" href="<?= route_to('admin.orders.update', $order['id']) ?>">Setujui</a>
+                    <a class="btn btn-primary" href="<?= base_url(route_to('admin.orders.update', $order['id'])) ?>">Setujui</a>
                 </div>
             </div>
         </div>
