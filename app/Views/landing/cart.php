@@ -222,6 +222,7 @@
     </div>
     <?= form_close() ?>
 </div>
+
 </div>
 <?= $this->endSection(); ?>
 

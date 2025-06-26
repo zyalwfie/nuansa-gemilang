@@ -320,8 +320,6 @@ class Landing extends BaseController
         $orderId = $this->request->getPost('order_id');
         $errors = [];
 
-        dd(uri_string() === 'dashboard/user/orders/show/' . $orderId);
-
         if (!$file || !$file->isValid()) {
             $errors['proof_of_payment'] = 'Bukti pembayaran wajib diunggah.';
         } else {

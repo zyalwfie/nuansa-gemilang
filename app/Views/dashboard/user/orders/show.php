@@ -174,46 +174,47 @@
             </div>
         </div>
     </div>
-    <?= $this->endSection(); ?>
+</div>
+<?= $this->endSection(); ?>
 
-    <?= $this->section('footer_js'); ?>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const img = document.getElementById('paymentProofImg');
-            const detailBtn = document.getElementById('detailBtn');
-            let viewer;
-            if (img && detailBtn) {
-                viewer = new Viewer(img, {
-                    toolbar: true,
-                    navbar: false,
-                    title: false,
-                    movable: true,
-                    zoomable: true,
-                    scalable: true,
-                    transition: true,
-                    fullscreen: true,
-                });
-                detailBtn.addEventListener('click', function() {
-                    viewer.show();
-                });
-            }
-        });
-
-        function previewProof(event) {
-            const file = event.target.files[0];
-            const previewContainer = document.getElementById('previewContainer');
-            previewContainer.innerHTML = '';
-            if (!file) return;
-            if (file.type.startsWith('image/')) {
-                const img = document.createElement('img');
-                img.src = URL.createObjectURL(file);
-                img.style.maxWidth = '100%';
-                img.style.maxHeight = '300px';
-                img.className = 'img-fluid border rounded';
-                previewContainer.appendChild(img);
-            } else {
-                previewContainer.innerHTML = '<span class="text-danger">File tidak didukung.</span>';
-            }
+<?= $this->section('footer_js'); ?>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const img = document.getElementById('paymentProofImg');
+        const detailBtn = document.getElementById('detailBtn');
+        let viewer;
+        if (img && detailBtn) {
+            viewer = new Viewer(img, {
+                toolbar: true,
+                navbar: false,
+                title: false,
+                movable: true,
+                zoomable: true,
+                scalable: true,
+                transition: true,
+                fullscreen: true,
+            });
+            detailBtn.addEventListener('click', function() {
+                viewer.show();
+            });
         }
-    </script>
-    <?= $this->endSection(); ?>
+    });
+
+    function previewProof(event) {
+        const file = event.target.files[0];
+        const previewContainer = document.getElementById('previewContainer');
+        previewContainer.innerHTML = '';
+        if (!file) return;
+        if (file.type.startsWith('image/')) {
+            const img = document.createElement('img');
+            img.src = URL.createObjectURL(file);
+            img.style.maxWidth = '100%';
+            img.style.maxHeight = '300px';
+            img.className = 'img-fluid border rounded';
+            previewContainer.appendChild(img);
+        } else {
+            previewContainer.innerHTML = '<span class="text-danger">File tidak didukung.</span>';
+        }
+    }
+</script>
+<?= $this->endSection(); ?>
