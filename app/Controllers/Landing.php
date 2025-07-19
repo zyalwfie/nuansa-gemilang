@@ -337,7 +337,7 @@ class Landing extends BaseController
         }
 
         $newName = $file->getRandomName();
-        $file->move(FCPATH . 'img/uploads/proof', $newName);
+        $file->move(FCPATH . 'img/uploads/proof/', $newName);
 
         $payment = $this->payments->where('order_id', $orderId)->first();
         if ($payment) {
