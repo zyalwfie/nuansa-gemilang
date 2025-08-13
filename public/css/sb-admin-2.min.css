@@ -12091,19 +12091,19 @@ a:focus {
 }
 
 .bg-login-image {
-    background: url('/nuansa-gemilang/public/img/login-image.png');
+    background: url('/img/login-image.png');
     background-position: center;
     background-size: cover
 }
 
 .bg-register-image {
-    background: url('/nuansa-gemilang/public/img/register-image.png');
+    background: url('/img/register-image.png');
     background-position: center;
     background-size: cover
 }
 
 .bg-password-image {
-    background: url('/nuansa-gemilang/public/img/register-image.png');
+    background: url('/img/register-image.png');
     background-position: center;
     background-size: cover
 }

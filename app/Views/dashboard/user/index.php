@@ -190,7 +190,7 @@
                 </div>
                 <div class="mt-4 text-center small">
                     <span class="mr-2">
-                        <i class="fas fa-id-card text-primary"></i> <?= user()->full_name ?>
+                        <i class="fas fa-id-card text-primary"></i> <?= user()->full_name ? user()->full_name : 'Nama lengkap' ?>
                     </span>
                     <span class="mr-2">
                         <i class="fas fa-user text-success"></i> <?= user()->username ?>

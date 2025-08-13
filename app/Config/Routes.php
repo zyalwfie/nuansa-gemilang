@@ -49,9 +49,9 @@ $routes->group('dashboard', ['filter' => 'login'], static function ($routes) {
         $routes->get('orders/show/(:num)', 'Admin::showOrder/$1', ['as' => 'admin.orders.show']);
         $routes->get('orders/update/(:num)', 'Admin::updateOrder/$1', ['as' => 'admin.orders.update']);
         
-        $routes->get('profile', 'Admin::profile', ['as' => 'admin.profile.index']);
-        $routes->get('profile/edit', 'Admin::editProfile', ['as' => 'admin.profile.edit']);
-        $routes->post('profile/update', 'Admin::updateProfile', ['as' => 'admin.profile.update']);
+        $routes->get('profile', 'Profile', ['as' => 'admin.profile.index']);
+        $routes->get('profile/edit', 'Profile::edit', ['as' => 'admin.profile.edit']);
+        $routes->post('profile/update', 'Profile::update', ['as' => 'admin.profile.update']);
     });
     
     // User Dashboard
@@ -61,8 +61,8 @@ $routes->group('dashboard', ['filter' => 'login'], static function ($routes) {
         $routes->get('orders', 'User::orders', ['as' => 'user.orders.index']);
         $routes->get('orders/show/(:num)', 'User::showOrder/$1', ['as' => 'user.orders.show']);
         
-        $routes->get('profile', 'User::profile', ['as' => 'user.profile.index']);
-        $routes->get('profile/edit', 'User::editProfile', ['as' => 'user.profile.edit']);
-        $routes->post('profile/update', 'User::updateProfile', ['as' => 'user.profile.update']);
+        $routes->get('profile', 'Profile', ['as' => 'user.profile.index']);
+        $routes->get('profile/edit', 'Profile::edit', ['as' => 'user.profile.edit']);
+        $routes->post('profile/update', 'Profile::update', ['as' => 'user.profile.update']);
     });
 });
