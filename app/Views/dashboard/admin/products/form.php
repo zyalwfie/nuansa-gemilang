@@ -79,15 +79,6 @@
                 </div>
 
                 <div class="mb-3">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="1" id="is_featured" name="is_featured">
-                        <label class="form-check-label" for="is_featured">
-                            Rekomendasi
-                        </label>
-                    </div>
-                </div>
-
-                <div class="mb-3">
                     <label for="description" class="form-label">Deskripsi</label>
                     <textarea class="form-control" id="description" name="description"><?= old('description', $product['description'] ?? '') ?></textarea>
                 </div>

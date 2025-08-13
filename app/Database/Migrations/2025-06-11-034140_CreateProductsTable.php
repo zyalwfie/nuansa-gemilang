@@ -15,11 +15,6 @@ class Products extends Migration
                 'unsigned'       => true,
                 'auto_increment' => true,
             ],
-            'is_featured' => [
-                'type'       => 'TINYINT',
-                'constraint' => 1,
-                'default'    => 0,
-            ],
             'name' => [
                 'type'       => 'VARCHAR',
                 'constraint' => 255,
@@ -46,7 +41,7 @@ class Products extends Migration
                 'type'       => 'VARCHAR',
                 'constraint' => 255,
                 'null'       => true,
-                'default'    => 'default-img-product.svg',
+                'default'    => 'default-product-img.png',
             ],
             'additional_images' => [
                 'type'       => 'TEXT',

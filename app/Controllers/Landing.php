@@ -8,10 +8,11 @@ use App\Models\OrderItemModel;
 use App\Models\OrderModel;
 use App\Models\PaymentModel;
 use App\Models\ProductModel;
+use App\Models\RatingModel;
 
 class Landing extends BaseController
 {
-    protected $products, $carts, $orders, $orderItems, $payments, $db, $cartsTotal;
+    protected $products, $carts, $orders, $orderItems, $payments, $rating, $db, $cartsTotal, $ratingBuilder;
 
     public function __construct()
     {
@@ -21,13 +22,23 @@ class Landing extends BaseController
         $this->orders = new OrderModel();
         $this->orderItems = new OrderItemModel();
         $this->payments = new PaymentModel();
+        $this->rating = new RatingModel();
+        $this->ratingBuilder = $this->db->table('ratings');
     }
 
     public function index()
     {
+        $featured_products = $this->ratingBuilder->select('*')
+            ->join('products', 'products.id = ratings.product_id')
+            ->where('star >=', 4)
+            ->orderBy('star', 'desc')
+            ->limit(3)
+            ->get()
+            ->getResult('array');
+
         $data = [
             'page_title' => 'Nuansa | Bean Bag',
-            'featured_products' => $this->products->where('is_featured', 1)->orderBy('name', 'ASC')->findAll(3),
+            'featured_products' => $featured_products,
             'carts_count' => (!logged_in()) ? 0 : $this->carts->where('user_id', user()->id)->countAllResults()
         ];
 
@@ -39,7 +50,7 @@ class Landing extends BaseController
         $data = [
             'page_title' => 'Nuansa | Belanja',
             'products' => $this->products->findAll(),
-            'featured_products' => $this->products->where('is_featured', 1)->orderBy('name', 'ASC')->findAll(3),
+            'featured_products' => $this->rating->where('star >=', 4)->orderBy('star', 'ASC')->findAll(3),
             'carts_count' => (!logged_in()) ? 0 : $this->carts->where('user_id', user()->id)->countAllResults()
         ];
 
@@ -52,7 +63,7 @@ class Landing extends BaseController
 
         $data = [
             'page_title' => "Nuansa | " . $product['name'],
-            'featured_products' => $this->products->where('is_featured', 1)->orderBy('name', 'ASC')->findAll(3),
+            'featured_products' => $this->rating->where('star >=', 4)->orderBy('star', 'ASC')->findAll(3),
             'carts_count' => (!logged_in()) ? 0 : $this->carts->where('user_id', user()->id)->countAllResults(),
             'product' => $product
         ];
@@ -64,7 +75,7 @@ class Landing extends BaseController
     {
         $data = [
             'page_title' => 'Nuansa | Tentang Kami',
-            'featured_products' => $this->products->where('is_featured', 1)->orderBy('name', 'ASC')->findAll(3),
+            'featured_products' => $this->rating->where('star >=', 4)->orderBy('star', 'ASC')->findAll(3),
             'carts_count' => (!logged_in()) ? 0 : $this->carts->where('user_id', user()->id)->countAllResults()
         ];
 
@@ -75,7 +86,7 @@ class Landing extends BaseController
     {
         $data = [
             'page_title' => 'Nuansa | Layanan',
-            'featured_products' => $this->products->where('is_featured', 1)->orderBy('name', 'ASC')->findAll(3),
+            'featured_products' => $this->rating->where('star >=', 4)->orderBy('star', 'ASC')->findAll(3),
             'carts_count' => (!logged_in()) ? 0 : $this->carts->where('user_id', user()->id)->countAllResults()
         ];
 
@@ -86,7 +97,7 @@ class Landing extends BaseController
     {
         $data = [
             'page_title' => 'Nuansa | Kontak',
-            'featured_products' => $this->products->where('is_featured', 1)->orderBy('name', 'ASC')->findAll(3),
+            'featured_products' => $this->rating->where('star >=', 4)->orderBy('star', 'ASC')->findAll(3),
             'carts_count' => (!logged_in()) ? 0 : $this->carts->where('user_id', user()->id)->countAllResults()
         ];
 
@@ -108,7 +119,7 @@ class Landing extends BaseController
 
         $data = [
             'page_title' => 'Nuansa | Halaman Keranjang',
-            'featured_products' => $this->products->where('is_featured', 1)->orderBy('name', 'ASC')->findAll(3),
+            'featured_products' => $this->rating->where('star >=', 4)->orderBy('star', 'ASC')->findAll(3),
             'carts' => $carts,
             'cartsTotal' => $this->cartsTotal,
             'carts_count' => $this->carts->where('user_id', user()->id)->countAllResults()
@@ -266,7 +277,7 @@ class Landing extends BaseController
 
         $data = [
             'page_title' => 'Nuansa | Pembayaran',
-            'featured_products' => $this->products->where('is_featured', 1)->orderBy('name', 'ASC')->findAll(3),
+            'featured_products' => $this->rating->where('star >=', 4)->orderBy('star', 'ASC')->findAll(3),
             'carts_count' => $this->carts->where('user_id', user()->id)->countAllResults(),
             'order_id' => $orderId
         ];
@@ -359,7 +370,7 @@ class Landing extends BaseController
     {
         $data = [
             'page_title' => 'Nuansa | Pembayaran',
-            'featured_products' => $this->products->where('is_featured', 1)->orderBy('name', 'ASC')->findAll(3),
+            'featured_products' => $this->rating->where('star >=', 4)->orderBy('star', 'ASC')->findAll(3),
             'carts_count' => $this->carts->where('user_id', user()->id)->countAllResults(),
         ];
 
