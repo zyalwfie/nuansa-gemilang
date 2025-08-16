@@ -25,11 +25,6 @@ class CreateOrderItemsTable extends Migration
                 'constraint' => 11,
                 'unsigned' => true,
             ],
-            'user_id' => [
-                'type' => 'int',
-                'constraint' => 11,
-                'unsigned' => true,
-            ],
             'quantity' => [
                 'type' => 'int',
                 'constraint' => 11
@@ -46,7 +41,6 @@ class CreateOrderItemsTable extends Migration
         $this->forge->addPrimaryKey('id');
         $this->forge->addForeignKey('order_id', 'orders', 'id', 'cascade', 'cascade');
         $this->forge->addForeignKey('product_id', 'products', 'id', 'cascade', 'cascade');
-        $this->forge->addForeignKey('user_id', 'users', 'id', 'cascade', 'cascade');
         $this->forge->createTable('order_items');
     }
 

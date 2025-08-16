@@ -41,7 +41,7 @@ class Products extends Migration
                 'type'       => 'VARCHAR',
                 'constraint' => 255,
                 'null'       => true,
-                'default'    => 'default-product-img.png',
+                'default'    => 'default-img-product.png',
             ],
             'additional_images' => [
                 'type'       => 'TEXT',

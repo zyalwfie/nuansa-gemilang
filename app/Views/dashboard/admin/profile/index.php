@@ -69,6 +69,14 @@
                         <small class="position-absolute p-1 bg-white text-secondary" style="left: .5rem; top: -.75rem;">Nama Pengguna</small>
                         <?= user()->username ?>
                     </div>
+                    <div class="d-flex gap-2">
+                        <a href="<?= route_to('admin.profile.edit') ?>" class="btn btn-primary">
+                            <i class="fas fa-fw fa-pen me-2"></i>Ubah Profil
+                        </a>
+                        <a href="<?= route_to('admin.profile.change.password') ?>" class="btn btn-warning">
+                            <i class="fas fa-fw fa-lock me-2"></i>Ganti Sandi
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

@@ -80,24 +80,29 @@
     </div>
 
     <!-- Nav Item - My Profile -->
-    <li class="nav-item <?= (uri_string() === 'dashboard/user/profile' || uri_string() === 'dashboard/admin/profile') ? 'active' : '' ?>">
+    <li class="nav-item <?= (url_is('dashboard/user/profile*') || url_is('dashboard/admin/profile*')) ? 'active' : '' ?>">
         <a class="nav-link" href="<?= in_groups('admin') ? base_url(route_to('admin.profile.index')) : base_url(route_to('user.profile.index')) ?>">
             <i class="fas fa-fw fa-user"></i>
-            <span>Profil</span></a>
+            <span>Profil</span>
+        </a>
     </li>
 
-    <!-- Nav Item - Edit Profile -->
-    <li class="nav-item <?= (uri_string() === 'dashboard/user/profile/edit' || uri_string() === 'dashboard/admin/profile/edit') ? 'active' : '' ?>">
-        <a class="nav-link" href="<?= in_groups('admin') ? base_url(route_to('admin.profile.edit')) : base_url(route_to('user.profile.edit')) ?>">
-            <i class="fas fa-fw fa-user-edit"></i>
-            <span>Ubah Profil</span></a>
-    </li>
+    <?php if (in_groups('user')) : ?>
+        <!-- Nav Item - Address -->
+        <li class="nav-item <?= (url_is('dashboard/user/address*')) ? 'active' : '' ?>">
+            <a class="nav-link" href="<?= route_to('user.address.index') ?>">
+                <i class="fas fa-fw fa-address-book"></i>
+                <span>Alamat</span>
+            </a>
+        </li>
+    <?php endif; ?>
 
     <!-- Nav Item - Logout -->
     <li class="nav-item">
         <a class="nav-link" href="<?= base_url('logout') ?>">
             <i class="fas fa-fw fa-sign-out-alt"></i>
-            <span>Keluar</span></a>
+            <span>Keluar</span>
+        </a>
     </li>
 
     <!-- Divider -->

@@ -52,6 +52,8 @@ $routes->group('dashboard', ['filter' => 'login'], static function ($routes) {
         $routes->get('profile', 'Profile', ['as' => 'admin.profile.index']);
         $routes->get('profile/edit', 'Profile::edit', ['as' => 'admin.profile.edit']);
         $routes->post('profile/update', 'Profile::update', ['as' => 'admin.profile.update']);
+        $routes->get('profile/change-password', 'Profile::changePassword', ['as' => 'admin.profile.change.password']);
+        $routes->post('profile/update-password', 'Profile::updatePassword', ['as' => 'admin.profile.update.password']);
     });
     
     // User Dashboard
@@ -64,5 +66,9 @@ $routes->group('dashboard', ['filter' => 'login'], static function ($routes) {
         $routes->get('profile', 'Profile', ['as' => 'user.profile.index']);
         $routes->get('profile/edit', 'Profile::edit', ['as' => 'user.profile.edit']);
         $routes->post('profile/update', 'Profile::update', ['as' => 'user.profile.update']);
+        $routes->get('profile/change-password', 'Profile::changePassword', ['as' => 'user.profile.change.password']);
+        $routes->post('profile/update-password', 'Profile::updatePassword', ['as' => 'user.profile.update.password']);
+
+        $routes->get('address', 'Address', ['as' => 'user.address.index']);
     });
 });

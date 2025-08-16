@@ -106,6 +106,14 @@ class Landing extends BaseController
 
     public function cart()
     {
+        $featured_products = $this->ratingBuilder->select('*')
+            ->join('products', 'products.id = ratings.product_id')
+            ->where('star >=', 4)
+            ->orderBy('star', 'desc')
+            ->limit(3)
+            ->get()
+            ->getResult('array');
+        
         $cartsBuilder = $this->db->table('carts');
         $query = $cartsBuilder
             ->select('carts.id as cart_id, user_id, product_id, quantity, price_at_add, name, price, stock, image')
@@ -119,7 +127,7 @@ class Landing extends BaseController
 
         $data = [
             'page_title' => 'Nuansa | Halaman Keranjang',
-            'featured_products' => $this->rating->where('star >=', 4)->orderBy('star', 'ASC')->findAll(3),
+            'featured_products' => $featured_products,
             'carts' => $carts,
             'cartsTotal' => $this->cartsTotal,
             'carts_count' => $this->carts->where('user_id', user()->id)->countAllResults()

@@ -7,7 +7,7 @@
 <?= $this->section('content'); ?>
 <!-- Page Heading -->
 <h1 class="h3 mb-2 text-gray-800">Halaman Profil</h1>
-<p class="mb-4">Halaman ini memungkinkan admin untuk melihat dan memperbarui informasi profil pribadi, termasuk foto profil, nama lengkap, dan email. Pastikan data profil Anda selalu akurat untuk kemudahan identifikasi dan komunikasi di dalam sistem.</p>
+<p class="mb-4">Halaman ini memungkinkan Anda untuk melihat dan memperbarui informasi profil pribadi, termasuk foto profil, nama lengkap, dan email. Pastikan data profil Anda selalu akurat untuk kemudahan identifikasi dan komunikasi di dalam sistem.</p>
 
 <?php if (session()->has('success')) : ?>
     <div class="alert alert-success alert-dismissible fade show px-3 py-1" role="alert">
@@ -68,6 +68,14 @@
                     <div class="position-relative px-3 pb-2 pt-3 border">
                         <small class="position-absolute p-1 bg-white text-secondary" style="left: .5rem; top: -.75rem;">Nama Pengguna</small>
                         <?= user()->username ?>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="<?= route_to('user.profile.edit') ?>" class="btn btn-primary">
+                            <i class="fas fa-fw fa-pen me-2"></i>Ubah Profil
+                        </a>
+                        <a href="<?= route_to('user.profile.change.password') ?>" class="btn btn-warning">
+                            <i class="fas fa-fw fa-lock me-2"></i>Ganti Sandi
+                        </a>
                     </div>
                 </div>
             </div>
