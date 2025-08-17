@@ -39,7 +39,7 @@
                         <div id="previewContainer" class="mt-3"></div>
                     </div>
                     <input type="hidden" name="order_id" value="<?= $order_id ?>">
-                    <div class="d-flex justify-content-end align-items-center gap-3">
+                    <div class="d-flex justify-content-end align-items-center gap-2">
                         <a href="<?= base_url(route_to('landing.cart.payment.done')) ?>" class="btn btn-secondary">Lakukan Nanti</a>
                         <button type="submit" class="btn btn-primary">Unggah Bukti</button>
                     </div>

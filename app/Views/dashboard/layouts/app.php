@@ -51,19 +51,17 @@
                 <!-- End of Topbar -->
 
                 <!-- Begin Page Content -->
-                <div class="container-fluid">
-
+                <div class="container-fluid mb-5">
                     <?= $this->renderSection('content'); ?>
-
                 </div>
                 <!-- /.container-fluid -->
 
+                <!-- Footer -->
+                <?= $this->include('dashboard/layouts/partials/footer'); ?>
+                <!-- End of Footer -->
+
             </div>
             <!-- End of Main Content -->
-
-            <!-- Footer -->
-            <?= $this->include('dashboard/layouts/partials/footer'); ?>
-            <!-- End of Footer -->
 
         </div>
         <!-- End of Content Wrapper -->

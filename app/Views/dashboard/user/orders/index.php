@@ -113,7 +113,7 @@
                             ?>
                             <tr>
                                 <td><?= $index++ ?></td>
-                                <td><?= $order['recipient_name'] ?></td>
+                                <td><?= $order['full_name'] ?? $order['username'] ?></td>
                                 <td>Rp<?= number_format($order['total_price'], 0, ',', '.') ?></td>
                                 <td>
                                     <span class="badge <?php if ($order['status'] === 'tertunda') : ?>text-bg-warning <?php elseif ($order['status'] === 'berhasil') : ?>text-bg-success <?php else: ?>text-bg-danger<?php endif; ?> text-capitalize">

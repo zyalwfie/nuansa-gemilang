@@ -18,17 +18,22 @@
     <title><?= $this->renderSection('page_title'); ?></title>
 
     <?= $this->renderSection('head_css'); ?>
+    <style>
+        nav .container .collapse .custom-navbar-cta .active {
+            color: #f9bf29;
+        }
+    </style>
 </head>
 
 <body>
-    
+
     <?= $this->include('landing/layouts/partials/header'); ?>
 
     <?= $this->renderSection('content'); ?>
-    
+
     <?= $this->include('landing/layouts/partials/footer'); ?>
-    
-    
+
+
     <script src="<?= base_url() ?>js/bootstrap.bundle.min.js"></script>
     <script src="<?= base_url() ?>js/tiny-slider.js"></script>
     <script src="<?= base_url() ?>js/custom.js"></script>

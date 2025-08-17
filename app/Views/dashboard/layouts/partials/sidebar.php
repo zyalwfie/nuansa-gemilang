@@ -99,10 +99,10 @@
 
     <!-- Nav Item - Logout -->
     <li class="nav-item">
-        <a class="nav-link" href="<?= base_url('logout') ?>">
+        <button class="nav-link" data-toggle="modal" data-target="#logoutModal">
             <i class="fas fa-fw fa-sign-out-alt"></i>
             <span>Keluar</span>
-        </a>
+        </button>
     </li>
 
     <!-- Divider -->

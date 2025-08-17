@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Models\AddressModel;
 use App\Models\CartModel;
 use App\Models\OrderItemModel;
 use App\Models\OrderModel;
@@ -12,13 +13,14 @@ use App\Models\RatingModel;
 
 class Landing extends BaseController
 {
-    protected $products, $carts, $orders, $orderItems, $payments, $rating, $db, $cartsTotal, $ratingBuilder;
+    protected $products, $addresses, $carts, $orders, $orderItems, $payments, $rating, $db, $cartsTotal, $ratingBuilder;
 
     public function __construct()
     {
         $this->db = \Config\Database::connect();
         $this->carts = new CartModel();
         $this->products = new ProductModel();
+        $this->addresses = new AddressModel();
         $this->orders = new OrderModel();
         $this->orderItems = new OrderItemModel();
         $this->payments = new PaymentModel();
@@ -121,6 +123,8 @@ class Landing extends BaseController
             ->get();
         $carts = $query->getResult();
 
+        $addresses = $this->addresses->where('user_id', user()->id)->findAll();
+
         foreach ($carts as $cart) {
             $this->cartsTotal += $cart->price_at_add;
         }
@@ -129,6 +133,7 @@ class Landing extends BaseController
             'page_title' => 'Nuansa | Halaman Keranjang',
             'featured_products' => $featured_products,
             'carts' => $carts,
+            'addresses' => $addresses,
             'cartsTotal' => $this->cartsTotal,
             'carts_count' => $this->carts->where('user_id', user()->id)->countAllResults()
         ];
@@ -256,7 +261,6 @@ class Landing extends BaseController
                 $this->orderItems->save([
                     'order_id' => $order['id'],
                     'product_id' => $productId,
-                    'user_id' => user()->id,
                     'quantity' => $quantity
                 ]);
             }

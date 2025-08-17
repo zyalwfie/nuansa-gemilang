@@ -4,6 +4,101 @@
 <?= $page_title ?>
 <?= $this->endSection(); ?>
 
+<?= $this->section('head_css'); ?>
+<style>
+    .address .my-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: .5rem;
+    }
+
+    .address .my-grid.empty {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .address .address-container {
+        transition: .1s linear;
+        position: relative;
+        border: 1px solid #ced4da;
+        border-radius: 10px;
+    }
+
+    .address .address-container:has(input[type=radio]:checked) {
+        box-shadow: 1px 1px 2px #ced4da;
+    }
+
+    .address .address-container:hover {
+        box-shadow: 1px 1px 2px #ced4da;
+    }
+
+    .address input[type=radio] {
+        display: none;
+    }
+
+    .address input[type=radio]:checked+.label {
+        background-color: #3b5d50;
+        color: #ced4da;
+        animation: bounceColor .4s ease;
+        box-shadow: 0 0 8px rgba(59, 93, 80, 0.6);
+    }
+
+    .address input[type=radio]:checked~.address-text {
+        text-shadow: 0 0 8px rgba(59, 93, 80, 0.6);
+    }
+
+    @keyframes bounceColor {
+        0% {
+            transform: scale(0.9) translateY(2px);
+            background-color: #2a423a;
+        }
+
+        50% {
+            transform: scale(1.1) translateY(-4px);
+            background-color: #3b5d50;
+        }
+
+        70% {
+            transform: scale(0.95) translateY(1px);
+        }
+
+        100% {
+            transform: scale(1) translateY(0);
+        }
+    }
+
+    .address .label {
+        padding-inline: 1rem;
+        border-radius: 9999rem;
+        border: 1px solid #3b5d50;
+        transition: .1s linear;
+        cursor: pointer;
+        font-weight: 500;
+        display: inline-block;
+        user-select: none;
+    }
+
+    .address .address-text {
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .address .label:hover {
+        background-color: #3b5d50;
+        color: #ced4da;
+    }
+
+    .address .label.active {
+        color: #ced4da;
+        background-color: #3b5d50;
+    }
+</style>
+<?= $this->endSection(); ?>
+
 <?= $this->section('content'); ?>
 <!-- Start Hero Section -->
 <div class="hero">
@@ -31,9 +126,7 @@
                             <th class="product-thumbnail">Gambar</th>
                             <th class="product-name">Nama</th>
                             <th class="product-price">Harga</th>
-                            <th class="product-quantity">
-                                Kuantitas
-                            </th>
+                            <th class="product-quantity">Kuantitas</th>
                             <th class="product-total">Total</th>
                             <th class="product-remove">Hapus</th>
                         </tr>
@@ -100,51 +193,41 @@
             <h2 class="h3 mb-3 text-black">Rincian Pengiriman</h2>
             <div class="p-3 p-lg-5 border bg-white">
 
-                <div class="form-group mb-3 row">
-                    <div class="col">
-                        <label for="recipient_name" class="text-black">Nama Penerima <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control <?= session('errors.recipient_name') ? 'is-invalid' : '' ?>" id="recipient_name" name="recipient_name" placeholder="Tulis namamu di sini" value="<?= old('recipient_name') ?>">
-                        <?php if (session('errors.recipient_name')) : ?>
-                            <div class="invalid-feedback">
-                                <?= session('errors.recipient_name') ?>
+                <div class="mb-3 address">
+                    <div class="text-black">Pilih alamat <sup class="text-danger">*</sup></div>
+                    <div class="my-grid <?= empty($addresses) ? 'empty' : '' ?>">
+                        <?php if (!empty($addresses)) : ?>
+                            <?php foreach ($addresses as $address) : ?>
+                                <div class="address-container p-3 d-flex flex-column align-items-start gap-1">
+                                    <input type="radio" name="address_id" id="<?= $address['id'] ?>" value="<?= $address['id'] ?>" class="<?= session('errors.address_id') ? 'is-invalid' : '' ?>">
+                                    <label for="<?= $address['id'] ?>" class="label"><?= $address['label'] ?></label>
+                                    <p class="address-text m-0"><?= $address['street_address'] ?></p>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else : ?>
+                            <div class="alert alert-warning d-flex align-items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                    fill="currentColor" viewBox="0 0 24 24">
+                                    <!--Boxicons v3.0 https://boxicons.com | License  https://docs.boxicons.com/free-->
+                                    <path d="M11 7h2v6h-2zM11 15h2v2h-2z"></path>
+                                    <path d="M16.71 2.29A1 1 0 0 0 16 2H8c-.27 0-.52.11-.71.29l-5 5A1 1 0 0 0 2 8v8c0 .27.11.52.29.71l5 5c.19.19.44.29.71.29h8c.27 0 .52-.11.71-.29l5-5A1 1 0 0 0 22 16V8c0-.27-.11-.52-.29-.71zM20 15.58l-4.41 4.41H8.42l-4.41-4.41V8.41L8.42 4h7.17L20 8.41z"></path>
+                                </svg>
+                                <span>
+                                    Belum ada alamat yang kamu buat! Buat alamat <a href="<?= route_to('user.address.index') ?>">di sini.</a>
+                                </span>
                             </div>
                         <?php endif; ?>
                     </div>
-                    <div class="col">
-                        <label for="recipient_email" class="text-black">Email</label>
-                        <input type="text" class="form-control <?= session('errors.recipient_email') ? 'is-invalid' : '' ?>" id="recipient_email" name="recipient_email" placeholder="Tulis emailmu di sini" value="<?= old('recipient_email') ?>">
-                        <?php if (session('errors.recipient_email')) : ?>
-                            <div class="invalid-feedback">
-                                <?= session('errors.recipient_email') ?>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                </div>
-
-                <div class="form-group mb-3">
-                    <label for="street_address" class="text-black">Alamat Penerima <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control <?= session('errors.street_address') ? 'is-invalid' : '' ?>" id="street_address" name="street_address" placeholder="Tulis alamatmu di sini" value="<?= old('street_address') ?>">
-                    <?php if (session('errors.street_address')) : ?>
-                        <div class="invalid-feedback">
-                            <?= session('errors.street_address') ?>
+                    <?php if (session('errors.address_id')) : ?>
+                        <div class="text-danger">
+                            <?= session('errors.address_id') ?>
                         </div>
                     <?php endif; ?>
-                </div>
-
-                <div class="form-group mb-3">
-                    <label for="recipient_phone" class="text-black">No. Telepon <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control <?= session('errors.recipient_phone') ? 'is-invalid' : '' ?>" id="recipient_phone" name="recipient_phone" placeholder="Tulis nomor teleponmu di sini" aria-describedby="phoneHelp" value="<?= old('recipient_phone') ?>">
-                    <?php if (session('errors.recipient_phone')) : ?>
-                        <div class="invalid-feedback">
-                            <?= session('errors.recipient_phone') ?>
-                        </div>
-                    <?php endif; ?>
-                    <div id="phoneHelp" class="form-text">Nomor telepon harus format Indonesia yang valid (contoh: 08123456789, +628123456789, 628123456789).</div>
                 </div>
 
                 <div class="form-group">
-                    <label for="notes" class="text-black">Catatan</label>
-                    <textarea name="notes" id="notes" cols="30" rows="5" name="notes" class="form-control" placeholder="Tulis catatanmu di sini..."><?= old('notes') ?></textarea>
+                    <label for="notes" class="text-black">Catatan <small>(Opsional)</small></label>
+                    <textarea name="notes" id="notes" cols="30" rows="5" name="notes" class="form-control" placeholder="Tulis catatanmu di sini jika ada..."><?= old('notes') ?></textarea>
                 </div>
 
             </div>
@@ -219,8 +302,8 @@
                 </div>
             </div>
         </div>
+        <?= form_close() ?>
     </div>
-    <?= form_close() ?>
 </div>
 
 </div>

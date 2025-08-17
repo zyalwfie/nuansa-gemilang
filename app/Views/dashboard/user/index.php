@@ -146,7 +146,7 @@
                                     ?>
                                     <tr>
                                         <td><?= $index++ ?></td>
-                                        <td><?= $order['recipient_name'] ?></td>
+                                        <td><?= $order['full_name'] ?? $order['username'] ?></td>
                                         <td>Rp<?= number_format($order['total_price'], 0, ',', '.') ?></td>
                                         <td><?= $formattedDate ?></td>
                                         <td>

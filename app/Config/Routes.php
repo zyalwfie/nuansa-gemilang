@@ -70,5 +70,6 @@ $routes->group('dashboard', ['filter' => 'login'], static function ($routes) {
         $routes->post('profile/update-password', 'Profile::updatePassword', ['as' => 'user.profile.update.password']);
 
         $routes->get('address', 'Address', ['as' => 'user.address.index']);
+        $routes->get('address/show/(:num)', 'Address::show/$1', ['as' => 'user.address.show']);
     });
 });

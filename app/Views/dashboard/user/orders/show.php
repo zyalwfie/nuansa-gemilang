@@ -15,7 +15,7 @@
     </ol>
 </nav>
 <h1 class="h3 mb-2 text-gray-800">Detail Pesanan</h1>
-<p class="mb-4">Kamu bisa cek kembali detail lengkap pesanan atas nama <span class="fw-semibold text-capitalize"><?= $order['recipient_name'] ?></span></p>
+<p class="mb-4">Kamu bisa cek kembali detail lengkap pesanan atas nama <span class="fw-semibold text-capitalize"><?= $order['full_name'] ?></span></p>
 
 <div class="row">
     <div class="col">
@@ -24,12 +24,12 @@
 
             <div class="form-group mb-3 row">
                 <div class="col">
-                    <label for="recipient_name" class="text-black">Nama Penerima</label>
-                    <input type="text" class="form-control" id="recipient_name" name="recipient_name" value="<?= $order['recipient_name'] ?>" disabled>
+                    <label for="full_name" class="text-black">Nama Penerima</label>
+                    <input type="text" class="form-control" id="full_name" name="full_name" value="<?= $order['full_name'] ?? $order['username'] ?>" disabled>
                 </div>
                 <div class="col">
-                    <label for="recipient_email" class="text-black">Email</label>
-                    <input type="text" class="form-control" id="recipient_email" name="recipient_email" value="<?= $order['recipient_email'] ?>" disabled>
+                    <label for="email" class="text-black">Email</label>
+                    <input type="text" class="form-control" id="email" name="email" value="<?= $order['email'] ?>" disabled>
                 </div>
             </div>
 
@@ -39,8 +39,8 @@
             </div>
 
             <div class="form-group mb-3">
-                <label for="recipient_phone" class="text-black">Nomor Telepon</label>
-                <input type="text" class="form-control" id="recipient_phone" name="recipient_phone" aria-describedby="phoneHelp" value="<?= $order['recipient_phone'] ?>" disabled>
+                <label for="phone_number" class="text-black">Nomor Telepon</label>
+                <input type="text" class="form-control" id="phone_number" name="phone_number" aria-describedby="phoneHelp" value="<?= $order['phone_number'] ?>" disabled>
             </div>
 
             <div class="form-group">

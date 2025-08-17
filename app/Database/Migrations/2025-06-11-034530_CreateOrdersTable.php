@@ -20,6 +20,11 @@ class CreateOrdersTable extends Migration
                 'constraint' => 11,
                 'unsigned' => true,
             ],
+            'address_id' => [
+                'type' => 'int',
+                'constraint' => 11,
+                'unsigned' => true,
+            ],
             'status' => [
                 'type' => 'enum',
                 'constraint' => ['tertunda', 'berhasil', 'gagal'],
@@ -28,23 +33,6 @@ class CreateOrdersTable extends Migration
             'total_price' => [
                 'type' => 'int',
                 'constraint' => 11,
-            ],
-            'street_address' => [
-                'type' => 'varchar',
-                'constraint' => 255
-            ],
-            'recipient_name' => [
-                'type' => 'varchar',
-                'constraint' => 255
-            ],
-            'recipient_email' => [
-                'type' => 'varchar',
-                'constraint' => 255,
-                'null' => true
-            ],
-            'recipient_phone' => [
-                'type' => 'varchar',
-                'constraint' => 15,
             ],
             'notes' => [
                 'type' => 'text',
@@ -62,6 +50,7 @@ class CreateOrdersTable extends Migration
 
         $this->forge->addPrimaryKey('id');
         $this->forge->addForeignKey('user_id', 'users', 'id', 'cascade', 'cascade');
+        $this->forge->addForeignKey('address_id', 'addresses', 'id', 'cascade', 'cascade');
         $this->forge->createTable('orders');
     }
 

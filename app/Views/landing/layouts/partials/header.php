@@ -12,7 +12,7 @@
                 <li class="nav-item <?= url_is('/') ? 'active' : '' ?>">
                     <a class="nav-link" href="<?= base_url() ?>">Beranda</a>
                 </li>
-                <li class="nav-item <?= url_is('shop*') || url_is('cart') ? 'active' : '' ?>"><a class="nav-link" href="<?= base_url(route_to('landing.shop')) ?>">Belanja</a></li>
+                <li class="nav-item <?= url_is('shop*') ? 'active' : '' ?>"><a class="nav-link" href="<?= base_url(route_to('landing.shop')) ?>">Belanja</a></li>
                 <li class="nav-item <?= url_is('about') ? 'active' : '' ?>"><a class="nav-link" href="<?= base_url(route_to('landing.about')) ?>">Tentang kami</a></li>
                 <li class="nav-item <?= url_is('service') ? 'active' : '' ?>"><a class="nav-link" href="<?= base_url(route_to('landing.service')) ?>">Layanan</a></li>
                 <li class="nav-item <?= url_is('contact') ? 'active' : '' ?>"><a class="nav-link" href="<?= base_url(route_to('landing.contact')) ?>">Kontak</a></li>
@@ -21,12 +21,32 @@
             <?php if (logged_in()) : ?>
                 <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
                     <?php if (in_groups('admin')) : ?>
-                        <li><a class="nav-link" href="<?= base_url(route_to('admin.index')) ?>"><img src="<?= base_url() ?>/img/user.svg"></a></li>
+                        <li class="m-0">
+                            <a class="nav-link" href="<?= base_url(route_to('admin.index')) ?>">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"
+                                    fill="currentColor" viewBox="0 0 24 24">
+                                    <!--Boxicons v3.0 https://boxicons.com | License  https://docs.boxicons.com/free-->
+                                    <path d="M12 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5m0-8c1.65 0 3 1.35 3 3s-1.35 3-3 3-3-1.35-3-3 1.35-3 3-3M4 22h16c.55 0 1-.45 1-1v-1c0-3.86-3.14-7-7-7h-4c-3.86 0-7 3.14-7 7v1c0 .55.45 1 1 1m6-7h4c2.76 0 5 2.24 5 5H5c0-2.76 2.24-5 5-5"></path>
+                                </svg>
+                            </a>
+                        </li>
                     <?php else : ?>
-                        <li><a class="nav-link" href="<?= base_url(route_to('user.index')) ?>"><img src="<?= base_url() ?>/img/user.svg"></a></li>
+                        <li class="m-0">
+                            <a class="nav-link" href="<?= base_url(route_to('user.index')) ?>">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"
+                                    fill="currentColor" viewBox="0 0 24 24">
+                                    <!--Boxicons v3.0 https://boxicons.com | License  https://docs.boxicons.com/free-->
+                                    <path d="M12 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5m0-8c1.65 0 3 1.35 3 3s-1.35 3-3 3-3-1.35-3-3 1.35-3 3-3M4 22h16c.55 0 1-.45 1-1v-1c0-3.86-3.14-7-7-7h-4c-3.86 0-7 3.14-7 7v1c0 .55.45 1 1 1m6-7h4c2.76 0 5 2.24 5 5H5c0-2.76 2.24-5 5-5"></path>
+                                </svg>
+                            </a>
+                        </li>
                         <li class="position-relative">
-                            <a class="nav-link" href="<?= base_url(route_to('landing.cart.index')) ?>">
-                                <img src="<?= base_url() ?>/img/cart.svg">
+                            <a class="nav-link <?= url_is('cart*') ? 'active' : '' ?>" href="<?= base_url(route_to('landing.cart.index')) ?>">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"
+                                    fill="currentColor" viewBox="0 0 24 24">
+                                    <!--Boxicons v3.0 https://boxicons.com | License  https://docs.boxicons.com/free-->
+                                    <path d="M10.5 18a1.5 1.5 0 1 0 0 3 1.5 1.5 0 1 0 0-3M17.5 18a1.5 1.5 0 1 0 0 3 1.5 1.5 0 1 0 0-3M8.82 15.77c.31.75 1.04 1.23 1.85 1.23h6.18c.79 0 1.51-.47 1.83-1.2l3.24-7.4c.14-.31.11-.67-.08-.95S21.34 7 21 7H7.33L5.92 3.62C5.76 3.25 5.4 3 5 3H2v2h2.33zM19.47 9l-2.62 6h-6.18l-2.5-6z"></path>
+                                </svg>
                             </a>
                             <?php if ($carts_count) : ?>
                                 <span class="badge rounded-pill bg-danger" style="position: absolute; top: 1px; right: -4px;">

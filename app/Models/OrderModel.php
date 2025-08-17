@@ -12,7 +12,7 @@ class OrderModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['user_id', 'status', 'total_price', 'street_address', 'recipient_name', 'recipient_email','recipient_phone', 'notes'];
+    protected $allowedFields    = ['user_id', 'address_id', 'status', 'total_price', 'notes'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -29,29 +29,12 @@ class OrderModel extends Model
 
     // Validation
     protected $validationRules = [
-        'street_address' => 'required',
-        'recipient_name' => 'required|max_length[255]',
-        'recipient_email' => 'permit_empty|valid_email',
-        'recipient_phone' => [
-            'label' => 'Nomor Telepon',
-            'rules' => 'required|regex_match[/^(\+62|62|0)8[1-9][0-9]{6,10}$/]'
-        ],
+        'address_id' => 'required',
     ];
     protected $validationMessages = [
-        'recipient_name' => [
-            'required' => 'Nama penerima wajib diisi!',
-            'max_length' => 'Karakter terlalu panjang!'
+        'address_id' => [
+            'required' => 'Pilih alamat terlebih dahulu!',
         ],
-        'recipient_email' => [
-            'valid_email' => 'Tolong masukkan email yang valid!'
-        ],
-        'street_address' => [
-            'required' => 'Alamat wajib diisi!'
-        ],
-        'recipient_phone' => [
-            'required' => 'Nomor telepon wajib diisi!',
-            'regex_match' => 'Nomor telepon tidak valid!'
-        ]
     ];
     protected $skipValidation       = false;
     protected $cleanValidationRules = true;
