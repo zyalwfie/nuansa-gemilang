@@ -18,7 +18,7 @@
 <p class="mb-4">Kamu bisa cek kembali detail lengkap pesanan atas nama <span class="fw-semibold text-capitalize"><?= $order['full_name'] ?></span></p>
 
 <div class="row">
-    <div class="col mb-3">
+    <div class="col">
         <h2 class="h3 mb-3 text-black">Rincian Pengiriman</h2>
         <div class="p-3 p-lg-5 border bg-white">
 
@@ -123,15 +123,15 @@
                     </div>
                 </div>
                 <div class="p-3 p-lg-5 border bg-white">
-                    <?php if ($proof_of_payment->proof_of_payment) : ?>
-                        <div class="d-flex align-items-stretch">
-                            <div class="mb-3 w-50 me-4">
+                    <div class="row">
+                        <?php if ($proof_of_payment->proof_of_payment) : ?>
+                            <div class="col">
                                 <img id="paymentProofImg" src="<?= base_url('img/uploads/proof/') . $proof_of_payment->proof_of_payment ?>" alt="Bukti Pembayaran" style="width: 100%; height: auto; object-fit: cover; cursor: pointer;">
                             </div>
-                            <div class="mb-3">
-                                <div class="mb-4">
-                                    <p class="mb-2">Gambar di samping adalah bukti pembayaran yang telah diunggah</p>
-                                    <button class="btn btn-info" type="button" id="detailBtn">Lihat detail</button>
+                            <div class="col">
+                                <div class="mb-3">
+                                    <p>Gambar di samping adalah bukti pembayaran yang telah diunggah</p>
+                                    <button class="btn btn-primary" type="button" id="detailBtn">Lihat</button>
                                 </div>
                                 <?= form_open_multipart(route_to('landing.cart.payment.update')) ?>
                                 <?= csrf_field() ?>
@@ -145,42 +145,31 @@
                                     <?php endif; ?>
                                     <input type="hidden" name="order_id" value="<?= $order['id'] ?>">
                                 </div>
+                                <div class="mb-3" id="previewContainer"></div>
                                 <button type="submit" class="btn btn-primary">Perbarui Bukti</button>
                                 <?= form_close() ?>
+                            <?php else : ?>
+                                <?= (!$proof_of_payment->proof_of_payment) ? form_open_multipart(base_url(route_to('landing.cart.payment.upload'))) : form_open_multipart(base_url(route_to('landing.cart.payment.update'))) ?>
+                                <?= csrf_field() ?>
+                                <div id="previewContainer" class="lead text-danger mb-4">Belum ada bukti pembayaran!</div>
+                                <div class="mb-3">
+                                    <?php if (!$proof_of_payment->proof_of_payment) : ?>
+                                        <input type="hidden" name="uri_string" value="<?= uri_string() ?>">
+                                    <?php endif; ?>
+                                    <label for="proof_of_payment" class="form-label">File Bukti Pembayaran <span class="text-danger">*</span></label>
+                                    <input class="form-control <?= session('errors.proof_of_payment') ? 'is-invalid' : '' ?>" type="file" id="proof_of_payment" name="proof_of_payment" accept="image/*,application/pdf" onchange="previewProof(event)">
+                                    <?php if (session('errors.proof_of_payment')) : ?>
+                                        <div class="invalid-feedback">
+                                            <?= session('errors.proof_of_payment') ?>
+                                        </div>
+                                    <?php endif; ?>
+                                    <input type="hidden" name="order_id" value="<?= $order['id'] ?>">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Unggah Bukti</button>
+                                <?= form_close() ?>
+                            <?php endif; ?>
                             </div>
-                        </div>
-                    <?php else : ?>
-                        <?= (!$proof_of_payment->proof_of_payment) ? form_open_multipart(base_url(route_to('landing.cart.payment.upload')), ['class' => 'd-flex align-items-stretch']) : form_open_multipart(base_url(route_to('landing.cart.payment.update')), ['class' => 'd-flex align-items-stretch']) ?>
-                        <?= csrf_field() ?>
-                        <div class="me-3 mb-3 mb-lg-0 position-relative" style="height: 250px; width: 200px; border-radius: .25rem; background-color: #e3e6f0; overflow: hidden;">
-                            <img id="paymentProofImg" src="" style="width: 100%; height: 100%; object-fit: cover; position: absolute; transform: translate(-50%, -50%); top: 50%; left: 50%;" alt="Bukti Pembayaran">
-                        </div>
-                        <div class="flex flex-column">
-                            <div class="alert alert-warning d-flex align-items-center flex-grow-1 mb-4">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                    fill="currentColor" viewBox="0 0 24 24" class="me-2">
-                                    <!--Boxicons v3.0 https://boxicons.com | License  https://docs.boxicons.com/free-->
-                                    <path d="M12 22c5.51 0 10-4.49 10-10S17.51 2 12 2 2 6.49 2 12s4.49 10 10 10M11 7h2v6h-2zm0 8h2v2h-2z"></path>
-                                </svg>
-                                <span>Belum ada bukti pembayaran!</span>
-                            </div>
-                            <div class="d-flex flex-column">
-                                <?php if (!$proof_of_payment->proof_of_payment) : ?>
-                                    <input type="hidden" name="uri_string" value="<?= uri_string() ?>">
-                                <?php endif; ?>
-                                <label for="proof_of_payment" class="form-label">File Bukti Pembayaran <span class="text-danger">*</span></label>
-                                <input class="form-control <?= session('errors.proof_of_payment') ? 'is-invalid' : '' ?>" type="file" id="proof_of_payment" name="proof_of_payment" accept="image/*,application/pdf" onchange="previewProof(event)">
-                                <?php if (session('errors.proof_of_payment')) : ?>
-                                    <div class="invalid-feedback">
-                                        <?= session('errors.proof_of_payment') ?>
-                                    </div>
-                                <?php endif; ?>
-                                <button type="submit" class="btn btn-primary mt-2">Unggah Bukti</button>
-                                <input type="hidden" name="order_id" value="<?= $order['id'] ?>">
-                            </div>
-                        </div>
-                        <?= form_close() ?>
-                    <?php endif; ?>
+                    </div>
                 </div>
             </div>
         </div>
@@ -190,41 +179,42 @@
 
 <?= $this->section('footer_js'); ?>
 <script>
-    const img = document.getElementById('paymentProofImg');
-    const detailBtn = document.getElementById('detailBtn');
+    document.addEventListener('DOMContentLoaded', function() {
+        const img = document.getElementById('paymentProofImg');
+        const detailBtn = document.getElementById('detailBtn');
+        let viewer;
+        if (img && detailBtn) {
+            viewer = new Viewer(img, {
+                toolbar: true,
+                navbar: false,
+                title: false,
+                movable: true,
+                zoomable: true,
+                scalable: true,
+                transition: true,
+                fullscreen: true,
+            });
+            detailBtn.addEventListener('click', function() {
+                viewer.show();
+            });
+        }
+    });
 
     function previewProof(event) {
         const file = event.target.files[0];
-        const fileInput = document.getElementById('proof_of_payment');
+        const previewContainer = document.getElementById('previewContainer');
+        previewContainer.innerHTML = '';
         if (!file) return;
         if (file.type.startsWith('image/')) {
+            const img = document.createElement('img');
             img.src = URL.createObjectURL(file);
-            if (fileInput.classList.contains('invalid')) {
-                fileInput.classList.remove('invalid')
-            }
+            img.style.maxWidth = '100%';
+            img.style.maxHeight = '300px';
+            img.className = 'img-fluid border rounded';
+            previewContainer.appendChild(img);
         } else {
-            fileInput.classList.add('invalid');
+            previewContainer.innerHTML = '<span class="text-danger">File tidak didukung.</span>';
         }
-    }
-
-    let viewer;
-    if (img && detailBtn) {
-        viewer = new Viewer(img, {
-            toolbar: true,
-            navbar: false,
-            title: false,
-            movable: true,
-            zoomable: true,
-            scalable: true,
-            transition: true,
-            fullscreen: true,
-        });
-        detailBtn.addEventListener('click', function() {
-            viewer.show();
-        });
-        img.addEventListener('click', function() {
-            viewer.show();
-        })
     }
 </script>
 <?= $this->endSection(); ?>

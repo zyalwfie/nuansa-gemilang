@@ -62,6 +62,8 @@ $routes->group('dashboard', ['filter' => 'login'], static function ($routes) {
         
         $routes->get('orders', 'User::orders', ['as' => 'user.orders.index']);
         $routes->get('orders/show/(:num)', 'User::showOrder/$1', ['as' => 'user.orders.show']);
+
+        $routes->get('histories', 'User::history', ['as' => 'user.history.index']);
         
         $routes->get('profile', 'Profile', ['as' => 'user.profile.index']);
         $routes->get('profile/edit', 'Profile::edit', ['as' => 'user.profile.edit']);
@@ -70,6 +72,8 @@ $routes->group('dashboard', ['filter' => 'login'], static function ($routes) {
         $routes->post('profile/update-password', 'Profile::updatePassword', ['as' => 'user.profile.update.password']);
 
         $routes->get('address', 'Address', ['as' => 'user.address.index']);
-        $routes->get('address/show/(:num)', 'Address::show/$1', ['as' => 'user.address.show']);
+        $routes->post('address/store', 'Address::store', ['as' => 'user.address.store']);
+        $routes->post('address/update/(:num)', 'Address::update/$1', ['as' => 'user.address.update']);
+        $routes->delete('address/destroy/(:num)', 'Address::destroy/$1', ['as' => 'user.address.destroy']);
     });
 });

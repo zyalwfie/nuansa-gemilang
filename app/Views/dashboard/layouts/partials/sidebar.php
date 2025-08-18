@@ -71,6 +71,16 @@
         </a>
     </li>
 
+    <?php if (in_groups('user')) : ?>
+        <!-- Nav Item - Order History -->
+        <li class="nav-item <?= url_is('dashboard/user/histories*') ? 'active' : '' ?>">
+            <a class="nav-link" href="<?= base_url(route_to('user.history.index')) ?>">
+                <i class="fas fa-fw fa-clock"></i>
+                <span>Riwayat</span>
+            </a>
+        </li>
+    <?php endif; ?>
+
     <!-- Divider -->
     <hr class="sidebar-divider">
 

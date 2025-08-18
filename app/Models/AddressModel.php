@@ -12,7 +12,7 @@ class AddressModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = [];
+    protected $allowedFields    = ['user_id', 'label', 'phone_number', 'street_address'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -28,8 +28,22 @@ class AddressModel extends Model
     protected $deletedField  = 'deleted_at';
 
     // Validation
-    protected $validationRules      = [];
-    protected $validationMessages   = [];
+    protected $validationRules = [
+        'label' => 'required',
+        'phone_number' => 'required',
+        'street_address' => 'required',
+    ];
+    protected $validationMessages = [
+        'label' => [
+            'required' => 'Label harus diisi!'
+        ],
+        'phone_number' => [
+            'required' => 'Nomor telepon harus diisi!'
+        ],
+        'street_address' => [
+            'required' => 'Alamat lengkap harus diisi!'
+        ]
+    ];
     protected $skipValidation       = false;
     protected $cleanValidationRules = true;
 

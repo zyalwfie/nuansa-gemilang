@@ -59,6 +59,7 @@ class User extends BaseController
             ->join('users', 'users.id = orders.user_id')
             ->join('addresses', 'addresses.id = orders.address_id')
             ->where('orders.user_id', user()->id)
+            ->where('orders.status !=', 'berhasil')
             ->get()
             ->getResultArray();
 
@@ -102,5 +103,24 @@ class User extends BaseController
         ];
 
         return view('dashboard/user/orders/show', $data);
+    }
+
+    public function history()
+    {
+        $orders = $this->ordersBuilder
+            ->select('full_name, username, email, label, phone_number, street_address, orders.id, orders.status, total_price, notes, orders.created_at, orders.updated_at')
+            ->join('users', 'users.id = orders.user_id')
+            ->join('addresses', 'addresses.id = orders.address_id')
+            ->where('orders.user_id', user()->id)
+            ->where('orders.status =', 'berhasil')
+            ->get()
+            ->getResultArray();
+        
+        $data = [
+            'page_title' => 'Dasbor | Riwayat',
+            'orders' => $orders,
+        ];
+
+        return view('dashboard/user/history/index', $data);
     }
 }

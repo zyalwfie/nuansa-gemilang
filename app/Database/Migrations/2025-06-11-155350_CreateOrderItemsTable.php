@@ -29,6 +29,11 @@ class CreateOrderItemsTable extends Migration
                 'type' => 'int',
                 'constraint' => 11
             ],
+            'is_rated' => [
+                'type' => 'tinyint',
+                'constraint' => 1,
+                'default' => 0
+            ],
             'created_at' => [
                 'type' => 'datetime',
                 'null' => true
