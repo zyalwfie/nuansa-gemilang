@@ -94,7 +94,7 @@
                         <tbody>
                             <?php foreach ($order_items as $orderItem) : ?>
                                 <tr>
-                                    <td><?= $orderItem->name ?> <strong class="mx-2">x</strong> <?= $orderItem->quantity ?></td>
+                                    <td class="d-flex align-items-center"><?= $orderItem->name ?> <strong class="mx-2">x</strong> <?= $orderItem->quantity ?> <?php if ($order['status'] === 'berhasil' && !$orderItem->is_rated) : ?><button class="btn p-0"><span class="badge text-bg-success ms-2">Nilai</span></button><?php elseif ($order['status'] === 'berhasil' && $orderItem->is_rated) : ?><button class="btn p-0 border-0" disabled><span class="badge text-bg-secondary ms-2">Ternilai</span></button><?php endif; ?></td>
                                     <td>Rp<?= number_format($orderItem->price, '0', '.', ',') ?></td>
                                 </tr>
                             <?php endforeach; ?>
@@ -123,19 +123,31 @@
                     </div>
                 </div>
                 <div class="p-3 p-lg-5 border bg-white">
-                    <?php if ($proof_of_payment->proof_of_payment) : ?>
+                    <?php if ($proof_of_payment->proof_of_payment && $order['status'] === 'berhasil') : ?>
                         <div class="d-flex align-items-stretch">
-                            <div class="mb-3 w-50 me-4">
-                                <img id="paymentProofImg" src="<?= base_url('img/uploads/proof/') . $proof_of_payment->proof_of_payment ?>" alt="Bukti Pembayaran" style="width: 100%; height: auto; object-fit: cover; cursor: pointer;">
+                            <div class="mb-3 w-50 me-4" style="height: 250px; width: 200px; border-radius: .25rem; background-color: #e3e6f0; overflow: hidden;">
+                                <img id="paymentProofImg" src="<?= base_url('img/uploads/proof/') . $proof_of_payment->proof_of_payment ?>" alt="Bukti Pembayaran" style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;">
+                            </div>
+                            <div class="mb-3">
+                                <div class="mb-4">
+                                    <p class="mb-2">Gambar di samping adalah bukti pembayaran yang telah diunggah</p>
+                                    <button class="btn btn-secondary" type="button" disabled>Pesanan telah disetujui</button>
+                                </div>
+                            </div>
+                        </div>
+                    <?php elseif ($proof_of_payment->proof_of_payment) : ?>
+                        <div class="d-flex align-items-stretch">
+                            <div class="mb-3 w-50 me-4" style="height: 250px; width: 200px; border-radius: .25rem; background-color: #e3e6f0; overflow: hidden;">
+                                <img id="paymentProofImg" src="<?= base_url('img/uploads/proof/') . $proof_of_payment->proof_of_payment ?>" alt="Bukti Pembayaran" style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;">
                             </div>
                             <div class="mb-3">
                                 <div class="mb-4">
                                     <p class="mb-2">Gambar di samping adalah bukti pembayaran yang telah diunggah</p>
                                     <button class="btn btn-info" type="button" id="detailBtn">Lihat detail</button>
                                 </div>
-                                <?= form_open_multipart(route_to('landing.cart.payment.update')) ?>
+                                <?= form_open_multipart(route_to('landing.cart.payment.update'), ['class' => 'd-flex flex-column align-items-stretch']) ?>
                                 <?= csrf_field() ?>
-                                <div class="mb-3">
+                                <div class="mb-2">
                                     <label for="proof_of_payment" class="form-label">File Bukti Pembayaran <span class="text-danger">*</span></label>
                                     <input class="form-control <?= session('errors.proof_of_payment') ? 'is-invalid' : '' ?>" type="file" id="proof_of_payment" name="proof_of_payment" accept="image/*,application/pdf" onchange="previewProof(event)">
                                     <?php if (session('errors.proof_of_payment')) : ?>

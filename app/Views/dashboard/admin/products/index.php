@@ -53,7 +53,7 @@
                 </form>
             </div>
         </div>
-        <a class="btn btn-primary" href="<?= url_to('admin.products.create') ?>"><i class="fas fa-fw fa-cart-plus"></i>&nbsp;&nbsp;<span>Tambah Produk</span></a>
+        <a class="btn btn-primary" href="<?= url_to('admin.products.create') ?>"><i class="fas fa-fw fa-plus"></i>&nbsp;&nbsp;<span>Tambah Produk</span></a>
     </div>
     <div class="card-body">
         <div class="table-responsive">

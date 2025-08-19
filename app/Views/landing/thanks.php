@@ -34,7 +34,7 @@
                 <h2 class="display-3 text-black">Terima kasih!</h2>
                 <p class="lead mb-5">Pesanmu sekarang sedang diproses.</p>
                 <div class="d-flex justify-content-center align-items-center gap-3">
-                    <a href="<?= base_url(route_to('user.index')) ?>" class="btn btn-sm btn-secondary">Cek Pesanan</a>
+                    <a href="<?= base_url(route_to('user.orders.index')) ?>" class="btn btn-sm btn-secondary">Cek Pesanan</a>
                     <a href="<?= base_url(route_to('landing.shop')) ?>" class="btn btn-sm btn-outline-black">Lanjutkan Belanja</a>
                 </div>
             </div>

@@ -63,7 +63,7 @@
         </div>
     </div>
 
-    <!-- Service Center Card -->
+    <!-- Cancel Orders Card -->
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="card border-left-danger shadow h-100 py-2">
             <div class="card-body">
@@ -146,7 +146,7 @@
                                     ?>
                                     <tr>
                                         <td><?= $index++ ?></td>
-                                        <td><?= $order['recipient_name'] ?></td>
+                                        <td><?= $order['full_name'] ?? $order['username'] ?></td>
                                         <td>Rp<?= number_format($order['total_price'], 0, ',', '.') ?></td>
                                         <td><?= $formattedDate ?></td>
                                         <td>
@@ -164,7 +164,7 @@
         </div>
     </div>
 
-    <!-- Pie Chart -->
+    <!-- Profile Card -->
     <div class="col-xl-4 col-lg-5">
         <div class="card shadow mb-4">
             <!-- Card Header - Dropdown -->
@@ -190,7 +190,7 @@
                 </div>
                 <div class="mt-4 small d-flex gap-2 flex-column align-items-center justify-content-center">
                     <span class="d-flex align-items-center gap-1">
-                        <i class="fas fa-id-card text-primary"></i> <?= user()->full_name ?>
+                        <i class="fas fa-id-card text-primary"></i> <?= user()->full_name ?? 'Belum ada nama lengkap!' ?>
                     </span>
                     <span class="d-flex align-items-center gap-1">
                         <i class="fas fa-user text-success"></i> <?= user()->username ?>

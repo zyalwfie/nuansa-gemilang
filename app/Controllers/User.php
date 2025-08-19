@@ -73,7 +73,7 @@ class User extends BaseController
 
     public function showOrder($orderId)
     {
-        $this->ordersBuilder->select('order_items.id as orderItemId, name, price, image, quantity');
+        $this->ordersBuilder->select('order_items.id as orderItemId, name, price, image, quantity, is_rated');
         $this->ordersBuilder->join('order_items', 'orders.id = order_items.order_id');
         $this->ordersBuilder->join('products', 'order_items.product_id = products.id');
         $this->ordersBuilder->where('orders.user_id', user()->id);

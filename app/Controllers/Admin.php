@@ -25,7 +25,9 @@ class Admin extends BaseController
 
     public function index()
     {
-        $this->builderOrders->select('SUM(total_price) AS total_spent');
+        $this->builderOrders
+            ->select('SUM(total_price) AS total_spent')
+            ->where('status =', 'berhasil');
         $query = $this->builderOrders->get();
         $totalEarning = $query->getRow();
 
@@ -34,15 +36,22 @@ class Admin extends BaseController
         $cancelledOrdersCount = $this->orderModel->where('status', 'gagal')->countAllResults();
         $totalEarningAmount = $totalEarning ? $totalEarning->total_spent : 0;
 
+        $orders = $this->builderOrders
+            ->select('full_name, username, email, label, phone_number, street_address, orders.status, total_price, notes, orders.created_at, orders.updated_at')
+            ->join('users', 'users.id = orders.user_id')
+            ->join('addresses', 'addresses.id = orders.address_id')
+            ->get()
+            ->getResultArray();
+
         $data = [
             'page_title' => 'Dashboard | Nuansa',
             'total_earning' => $totalEarningAmount,
             'completed_orders_count' => $completedOrdersCount,
             'pending_orders_count' => $pendingOrdersCount,
             'cancel_orders_count' => $cancelledOrdersCount,
-            'orders' => $this->orderModel->findAll(4)
+            'orders' => $orders
         ];
-        
+
         return view('dashboard/admin/index', $data);
     }
 
@@ -298,7 +307,12 @@ class Admin extends BaseController
     // Order Controller
     public function orders()
     {
-        $orders = $this->orderModel->findAll();
+        $orders = $this->builderOrders
+            ->select('full_name, username, email, label, phone_number, street_address, orders.status, total_price, notes, orders.created_at, orders.updated_at, orders.id')
+            ->join('users', 'users.id = orders.user_id')
+            ->join('addresses', 'addresses.id = orders.address_id')
+            ->get()
+            ->getResultArray();
 
         $data = [
             'page_title' => 'Nuansa | Admin | Pesanan',
@@ -317,7 +331,13 @@ class Admin extends BaseController
         $query = $this->builderOrders->get();
         $orderItems = $query->getResult();
 
-        $order = $this->orderModel->where('id', $orderId)->first();
+        $order = $this->builderOrders
+            ->select('full_name, username, email, label, phone_number, street_address, orders.status, total_price, notes, orders.created_at, orders.updated_at, orders.id')
+            ->join('users', 'users.id = orders.user_id')
+            ->join('addresses', 'addresses.id = orders.address_id')
+            ->where('orders.id', $orderId)
+            ->get()
+            ->getRowArray();
 
         $proofOfPayment = $this->builderOrders->select('proof_of_payment')
             ->join('payments', 'orders.id = payments.order_id')
