@@ -12,7 +12,7 @@ class RatingModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = [];
+    protected $allowedFields    = ['product_id', 'star'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

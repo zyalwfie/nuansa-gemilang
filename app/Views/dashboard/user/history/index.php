@@ -124,7 +124,7 @@
                                 <td class="align-middle">
                                     <div class="d-flex align-items-center gap-1">
                                         <div>
-                                            <a href="<?= base_url(route_to('user.orders.show', $order['id'])) ?>" class="btn btn-info">
+                                            <a href="<?= base_url(route_to('user.history.show', $order['id'])) ?>" class="btn btn-info">
                                                 <i class="fas fa-faw fa-eye"></i>
                                             </a>
                                         </div>

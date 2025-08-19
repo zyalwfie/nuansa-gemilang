@@ -34,37 +34,40 @@ $routes->group('dashboard', ['filter' => 'login'], static function ($routes) {
     // Admin Dashboard
     $routes->group('admin', ['filter' => 'role:admin'], static function ($routes) {
         $routes->get('', 'Admin', ['as' => 'admin.index']);
-        
+
         $routes->get('products', 'Admin::products', ['as' => 'admin.products.index']);
         $routes->get('products/create', 'Admin::createProduct', ['as' => 'admin.products.create']);
         $routes->post('products/store', 'Admin::storeProduct', ['as' => 'admin.products.store']);
         $routes->get('products/edit/(:segment)', 'Admin::editProduct/$1', ['as' => 'admin.products.edit']);
         $routes->post('products/update/(:num)', 'Admin::updateProduct/$1', ['as' => 'admin.products.update']);
         $routes->post('products/destroy/(:segment)', 'Admin::destroyProduct/$1', ['as' => 'admin.products.destroy']);
-        
+
         $routes->get('users', 'Admin::users', ['as' => 'admin.users.index']);
         $routes->post('users/destroy/(:segment)', 'Admin::destroyUser/$1', ['as' => 'admin.users.destroy']);
-        
+
         $routes->get('orders', 'Admin::orders', ['as' => 'admin.orders.index']);
         $routes->get('orders/show/(:num)', 'Admin::showOrder/$1', ['as' => 'admin.orders.show']);
         $routes->get('orders/update/(:num)', 'Admin::updateOrder/$1', ['as' => 'admin.orders.update']);
-        
+
         $routes->get('profile', 'Profile', ['as' => 'admin.profile.index']);
         $routes->get('profile/edit', 'Profile::edit', ['as' => 'admin.profile.edit']);
         $routes->post('profile/update', 'Profile::update', ['as' => 'admin.profile.update']);
         $routes->get('profile/change-password', 'Profile::changePassword', ['as' => 'admin.profile.change.password']);
         $routes->post('profile/update-password', 'Profile::updatePassword', ['as' => 'admin.profile.update.password']);
     });
-    
+
     // User Dashboard
     $routes->group('user', ['filter' => 'role:user'], static function ($routes) {
         $routes->get('', 'User', ['as' => 'user.index']);
-        
+
         $routes->get('orders', 'User::orders', ['as' => 'user.orders.index']);
         $routes->get('orders/show/(:num)', 'User::showOrder/$1', ['as' => 'user.orders.show']);
 
         $routes->get('histories', 'User::history', ['as' => 'user.history.index']);
-        
+        $routes->get('histories/show/(:num)', 'User::showHistory/$1', ['as' => 'user.history.show']);
+
+        $routes->post('rate/update', 'User::rateProduct', ['as' => 'user.rate.update']);
+
         $routes->get('profile', 'Profile', ['as' => 'user.profile.index']);
         $routes->get('profile/edit', 'Profile::edit', ['as' => 'user.profile.edit']);
         $routes->post('profile/update', 'Profile::update', ['as' => 'user.profile.update']);

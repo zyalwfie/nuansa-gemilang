@@ -3,18 +3,22 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Models\OrderItemModel;
 use App\Models\OrderModel;
+use App\Models\RatingModel;
 use Myth\Auth\Models\UserModel;
 
 class User extends BaseController
 {
-    protected $orders, $db, $ordersBuilder, $userModel;
+    protected $orders, $orderItems, $ratings, $db, $ordersBuilder, $userModel;
 
     public function __construct()
     {
         $this->db = \Config\Database::connect();
         $this->ordersBuilder = $this->db->table('orders');
         $this->orders = new OrderModel();
+        $this->orderItems = new OrderItemModel();
+        $this->ratings = new RatingModel();
         $this->userModel = new UserModel();
     }
 
@@ -115,12 +119,81 @@ class User extends BaseController
             ->where('orders.status =', 'berhasil')
             ->get()
             ->getResultArray();
-        
+
         $data = [
             'page_title' => 'Dasbor | Riwayat',
             'orders' => $orders,
         ];
 
         return view('dashboard/user/history/index', $data);
+    }
+
+    public function showHistory($orderId)
+    {
+        $this->ordersBuilder->select('order_items.id as orderItemId, products.id as productId, name, price, image, quantity, is_rated');
+        $this->ordersBuilder->join('order_items', 'orders.id = order_items.order_id');
+        $this->ordersBuilder->join('products', 'order_items.product_id = products.id');
+        $this->ordersBuilder->where('orders.user_id', user()->id);
+        $this->ordersBuilder->where('order_items.order_id', $orderId);
+        $query = $this->ordersBuilder->get();
+        $orderItems = $query->getResult();
+
+        $order = $this->ordersBuilder
+            ->select('full_name, username, email, label, phone_number, street_address, orders.id, orders.status, total_price, notes, orders.created_at, orders.updated_at')
+            ->join('users', 'users.id = orders.user_id')
+            ->join('addresses', 'addresses.id = orders.address_id')
+            ->where('orders.id', $orderId)
+            ->get()
+            ->getRowArray();
+
+        $proofOfPayment = $this->ordersBuilder->select('proof_of_payment')
+            ->join('payments', 'orders.id = payments.order_id')
+            ->where('payments.order_id', $orderId)
+            ->get()
+            ->getRow();
+
+        $data = [
+            'page_title' => 'Nuansa | Riwayat | Detail Pesanan',
+            'order_items' => $orderItems,
+            'order' => $order,
+            'proof_of_payment' => $proofOfPayment
+        ];
+
+        return view('dashboard/user/history/show', $data);
+    }
+
+    public function rateProduct()
+    {
+        $rules = [
+            'order_item_id' => 'required|integer',
+            'rating' => 'required|integer|greater_than_equal_to[1]|less_than_equal_to[5]'
+        ];
+
+        if (!$this->validate($rules)) {
+            return $this->response->setJSON([
+                'errors' => $this->validator->getErrors()
+            ])->setStatusCode(422);
+        }
+
+        $orderItemId = $this->request->getPost('order_item_id');
+        $productId = $this->request->getPost('product_id');
+        $rating = $this->request->getPost('rating');
+
+        $this->orderItems->update($orderItemId, [
+            'is_rated' => 1
+        ]);
+        $this->ratings->insert([
+            'product_id' => $productId,
+            'star' => $rating
+        ]);
+
+        return $this->response->setJSON([
+            'success' => true,
+            'message' => 'Terima kasih, rating berhasil disimpan!',
+            'data' => [
+                'order_item_id' => $orderItemId,
+                'rating' => $rating
+            ]
+        ]);
     }
 }
