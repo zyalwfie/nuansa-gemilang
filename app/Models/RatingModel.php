@@ -43,4 +43,20 @@ class RatingModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    public function getAverageByProduct($productId)
+    {
+        return $this->selectAvg('star', 'avg_rating')
+            ->where('product_id', $productId)
+            ->get()
+            ->getRow()
+            ->avg_rating ?? 0;
+    }
+
+    public function getAllAverages()
+    {
+        return $this->select('product_id, AVG(star) as avg_rating')
+            ->groupBy('product_id')
+            ->findAll();
+    }
 }

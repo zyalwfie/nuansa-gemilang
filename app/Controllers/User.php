@@ -117,6 +117,7 @@ class User extends BaseController
             ->join('addresses', 'addresses.id = orders.address_id')
             ->where('orders.user_id', user()->id)
             ->where('orders.status =', 'berhasil')
+            ->orderBy('created_at', 'desc')
             ->get()
             ->getResultArray();
 

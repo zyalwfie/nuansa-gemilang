@@ -115,9 +115,18 @@
                     </div>
                     <div class="col">
                         <?php if (session()->has('proofed')) : ?>
-                            <div class="alert alert-primary alert-dismissible fade show" role="alert">
-                                <?= session('proofed') ?>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            <div class="px-1 py-2 alert alert-primary alert-dismissible fade show d-flex align-items-center justify-content-between" role="alert">
+                                <div class="d-flex align-items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="me-2" fill="currentColor">
+                                        <path d="m10 15.586-3.293-3.293-1.414 1.414L10 18.414l9.707-9.707-1.414-1.414z"></path>
+                                    </svg>
+                                    <span><?= session('proofed') ?></span>
+                                </div>
+                                <button type="button" class="btn p-0" data-bs-dismiss="alert" aria-label="Close">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z"></path>
+                                    </svg>
+                                </button>
                             </div>
                         <?php endif; ?>
                     </div>

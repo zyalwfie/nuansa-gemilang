@@ -30,13 +30,15 @@ class Landing extends BaseController
 
     public function index()
     {
-        $featured_products = $this->ratingBuilder->select('*')
-            ->join('products', 'products.id = ratings.product_id')
-            ->where('star >=', 4)
-            ->orderBy('star', 'desc')
+        $featured_products = $this->db->table('products')
+            ->select('products.*, ROUND(AVG(ratings.star),1) as avg_rating')
+            ->join('ratings', 'ratings.product_id = products.id', 'left')
+            ->groupBy('products.id')
+            ->having('AVG(ratings.star) >', 3.0)
+            ->orderBy('avg_rating', 'desc')
             ->limit(3)
             ->get()
-            ->getResult('array');
+            ->getResultArray();
 
         $data = [
             'page_title' => 'Nuansa | Bean Bag',
@@ -49,10 +51,30 @@ class Landing extends BaseController
 
     public function shop()
     {
+        $featured_products = $this->db->table('products')
+            ->select('products.*, ROUND(AVG(ratings.star),1) as avg_rating')
+            ->join('ratings', 'ratings.product_id = products.id', 'left')
+            ->groupBy('products.id')
+            ->having('AVG(ratings.star) >', 3.0)
+            ->orderBy('avg_rating', 'desc')
+            ->limit(3)
+            ->get()
+            ->getResultArray();
+
+        $products = $this->products->findAll();
+        $ratings = $this->rating->getAllAverages();
+        $ratingMap = [];
+        foreach ($ratings as $r) {
+            $ratingMap[$r['product_id']] = round((float)$r['avg_rating'], 1);
+        }
+        foreach ($products as &$product) {
+            $product['avg_rating'] = $ratingMap[$product['id']] ?? 0.0;
+        }
+
         $data = [
             'page_title' => 'Nuansa | Belanja',
-            'products' => $this->products->findAll(),
-            'featured_products' => $this->rating->where('star >=', 4)->orderBy('star', 'ASC')->findAll(3),
+            'products' => $products,
+            'featured_products' => $featured_products,
             'carts_count' => (!logged_in()) ? 0 : $this->carts->where('user_id', user()->id)->countAllResults()
         ];
 
@@ -61,11 +83,29 @@ class Landing extends BaseController
 
     public function showShop($slug)
     {
-        $product = $this->products->where('slug', $slug)->first();
+        $featured_products = $this->db->table('products')
+            ->select('products.*, ROUND(AVG(ratings.star),1) as avg_rating')
+            ->join('ratings', 'ratings.product_id = products.id', 'left')
+            ->groupBy('products.id')
+            ->having('AVG(ratings.star) >', 3.0)
+            ->orderBy('avg_rating', 'desc')
+            ->limit(3)
+            ->get()
+            ->getResultArray();
+        
+        $product = $this->db->table('products')
+            ->select('products.*, ROUND(AVG(ratings.star),1) as avg_rating')
+            ->join('ratings', 'ratings.product_id = products.id', 'left')
+            ->where('slug', $slug)
+            ->get()
+            ->getRowArray();
+
+        $avgRating = $this->rating->getAverageByProduct($product['id']);
+        $product['avg_rating'] = round((float)$avgRating, 1);
 
         $data = [
             'page_title' => "Nuansa | " . $product['name'],
-            'featured_products' => $this->rating->where('star >=', 4)->orderBy('star', 'ASC')->findAll(3),
+            'featured_products' => $featured_products,
             'carts_count' => (!logged_in()) ? 0 : $this->carts->where('user_id', user()->id)->countAllResults(),
             'product' => $product
         ];
@@ -115,7 +155,7 @@ class Landing extends BaseController
             ->limit(3)
             ->get()
             ->getResult('array');
-        
+
         $cartsBuilder = $this->db->table('carts');
         $query = $cartsBuilder
             ->select('carts.id as cart_id, user_id, product_id, quantity, price_at_add, name, price, stock, image')
@@ -276,6 +316,14 @@ class Landing extends BaseController
 
     public function payment($orderId)
     {
+        $featured_products = $this->ratingBuilder->select('*')
+            ->join('products', 'products.id = ratings.product_id')
+            ->where('star >=', 4)
+            ->orderBy('star', 'desc')
+            ->limit(3)
+            ->get()
+            ->getResult('array');
+
         $orders = $this->orders->where('id', $orderId)->first();
         $payment = $this->payments->where('order_id', $orderId)->first();
 
@@ -289,7 +337,7 @@ class Landing extends BaseController
 
         $data = [
             'page_title' => 'Nuansa | Pembayaran',
-            'featured_products' => $this->rating->where('star >=', 4)->orderBy('star', 'ASC')->findAll(3),
+            'featured_products' => $featured_products,
             'carts_count' => $this->carts->where('user_id', user()->id)->countAllResults(),
             'order_id' => $orderId
         ];
@@ -380,9 +428,17 @@ class Landing extends BaseController
 
     public function paymentDone()
     {
+        $featured_products = $this->ratingBuilder->select('*')
+            ->join('products', 'products.id = ratings.product_id')
+            ->where('star >=', 4)
+            ->orderBy('star', 'desc')
+            ->limit(3)
+            ->get()
+            ->getResult('array');
+
         $data = [
             'page_title' => 'Nuansa | Pembayaran',
-            'featured_products' => $this->rating->where('star >=', 4)->orderBy('star', 'ASC')->findAll(3),
+            'featured_products' => $featured_products,
             'carts_count' => $this->carts->where('user_id', user()->id)->countAllResults(),
         ];
 

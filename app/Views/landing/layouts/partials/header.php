@@ -16,6 +16,9 @@
                 <li class="nav-item <?= url_is('about') ? 'active' : '' ?>"><a class="nav-link" href="<?= base_url(route_to('landing.about')) ?>">Tentang kami</a></li>
                 <li class="nav-item <?= url_is('service') ? 'active' : '' ?>"><a class="nav-link" href="<?= base_url(route_to('landing.service')) ?>">Layanan</a></li>
                 <li class="nav-item <?= url_is('contact') ? 'active' : '' ?>"><a class="nav-link" href="<?= base_url(route_to('landing.contact')) ?>">Kontak</a></li>
+                <?php if(logged_in()) : ?>
+                    <li class="nav-item"><a class="nav-link" href="<?= base_url(route_to('logout')) ?>">Keluar</a></li>
+                <?php endif; ?>
             </ul>
 
             <?php if (logged_in()) : ?>
