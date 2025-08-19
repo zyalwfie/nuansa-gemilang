@@ -54,6 +54,10 @@ $routes->group('dashboard', ['filter' => 'login'], static function ($routes) {
         $routes->post('profile/update', 'Profile::update', ['as' => 'admin.profile.update']);
         $routes->get('profile/change-password', 'Profile::changePassword', ['as' => 'admin.profile.change.password']);
         $routes->post('profile/update-password', 'Profile::updatePassword', ['as' => 'admin.profile.update.password']);
+
+        $routes->get('reports', 'Admin::reports', ['as' => 'admin.reports.index']);
+        $routes->get('reports/preview', 'Admin::previewReportPdf', ['as' => 'admin.reports.preview']);
+        $routes->get('reports/export', 'Admin::exportReportPdf', ['as' => 'admin.reports.export']);
     });
 
     // User Dashboard

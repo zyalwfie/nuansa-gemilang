@@ -39,6 +39,13 @@
             Manajemen
         </div>
 
+        <!-- Nav Item - Reports -->
+        <li class="nav-item <?= url_is('dashboard/admin/reports*') ? 'active' : '' ?>">
+            <a class="nav-link" href="<?= base_url(route_to('admin.reports.index')) ?>">
+                <i class="fas fa-fw fa-chart-bar"></i>
+                <span>Laporan</span></a>
+        </li>
+
         <!-- Nav Item - Users -->
         <li class="nav-item <?= url_is('dashboard/admin/users*') ? 'active' : '' ?>">
             <a class="nav-link" href="<?= base_url(route_to('admin.users.index')) ?>">
