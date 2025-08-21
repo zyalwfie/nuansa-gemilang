@@ -4,6 +4,29 @@
 <?= isset($product) ? $page_title_edit : $page_title_create ?>
 <?= $this->endSection(); ?>
 
+<?= $this->section('head_css'); ?>
+<style>
+    .upload-box {
+        cursor: pointer;
+        transition: 0.3s;
+        background-color: #f8f9fa;
+        border-style: dashed !important;
+    }
+
+    .upload-box:hover {
+        background-color: #e9ecef;
+        border-color: #0d6efd;
+        box-shadow: 0 0 10px rgba(13, 110, 253, 0.3);
+    }
+
+    .upload-box.dragover {
+        background-color: #e3f2fd;
+        border-color: #0d6efd;
+        box-shadow: 0 0 15px rgba(13, 110, 253, 0.6);
+    }
+</style>
+<?= $this->endSection(); ?>
+
 <?= $this->section('content'); ?>
 <div class="row">
     <div class="col-lg-8 mx-auto">
@@ -49,39 +72,49 @@
 
                 <div class="mb-3">
                     <label for="image" class="form-label">Gambar Utama <span class="text-danger">*</span></label>
-                    <input class="form-control <?= session()->has('error_image') ? 'is-invalid' : '' ?>" type="file" id="image" name="image" <?= !isset($product) ? '' : '' ?>>
-                    <?php if (session()->has('error_image')): ?>
-                        <div class="invalid-feedback"><?= session('error_image') ?></div>
-                    <?php endif; ?>
-                    <small class="text-muted">Maksimal ukuran 2MB (png, jpg, jpeg)</small>
+
+                    <!-- Upload Box -->
+                    <div class="upload-box text-center p-4 border border-2 rounded" id="uploadBox">
+                        <i class="bi bi-cloud-arrow-up display-4 text-primary"></i>
+                        <p class="mt-2 mb-1">Klik atau tarik gambar ke sini</p>
+                        <small class="text-muted">Maksimal ukuran 2MB (png, jpg, jpeg)</small>
+                        <input type="file" class="form-control d-none <?= session('error_image') ? 'is-invalid' : '' ?>" id="image" name="image" accept="image/*">
+                        <?php if (session('error_image')) : ?>
+                            <div class="invalid-feedback">
+                                <?= session('error_image') ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+
+                    <!-- Preview Image -->
+                    <div class="mt-3 d-none" id="previewContainer">
+                        <p class="mb-2">Preview:</p>
+                        <img id="previewImage" src="" alt="Preview" class="img-thumbnail" style="height: 200px; object-fit: cover;">
+                    </div>
+
                     <?php if (isset($product['image'])): ?>
                         <div class="mt-2">
-                            <img src="<?= base_url() ?>img/uploads/main/<?= $product['image'] ?>" alt="Main Image" style="height: 150px; width: 150px; object-fit: cover;" class="img-thumbnail">
-                        </div>
-                    <?php endif; ?>
-                </div>
-
-                <div class="mb-3">
-                    <label for="additional_images" class="form-label">Gambar Lainnya <small class="text-muted">Opsional</small></label>
-                    <input type="file" class="form-control <?= session()->has('error_additional_images') ? 'is-invalid' : '' ?>" id="additional_images"
-                        name="additional_images[]" multiple accept="image/*">
-                    <?php if (session()->has('error_additional_images')): ?>
-                        <div class="invalid-feedback"><?= session('error_additional_images') ?></div>
-                    <?php endif; ?>
-                    <small class="text-muted">Maksimal 5 gambar (1MB)</small>
-                    <?php if (!empty($product['additional_images'])): ?>
-                        <div class="d-flex gap-3 mt-2">
-                            <?php foreach (json_decode($product['additional_images']) as $img): ?>
-                                <img src="<?= base_url() ?>img/uploads/adds/<?= $img ?>" alt="Additional Image" class="img-thumbnail" style="height: 150px; width: 150px; object-fit: cover;">
-                            <?php endforeach; ?>
+                            <p class="mb-1">Gambar Sebelumnya:</p>
+                            <img src="<?= base_url() ?>img/uploads/main/<?= $product['image'] ?>"
+                                alt="Main Image"
+                                style="height: 150px; width: 150px; object-fit: cover;"
+                                class="img-thumbnail">
                         </div>
                     <?php endif; ?>
                 </div>
 
                 <div class="mb-3">
                     <label for="description" class="form-label">Deskripsi</label>
-                    <textarea class="form-control" id="description" name="description"><?= old('description', $product['description'] ?? '') ?></textarea>
+
+                    <!-- Quill editor container -->
+                    <div id="editor" style="height: 200px;">
+                        <?= htmlspecialchars_decode(old('description', $product['description'] ?? '')) ?>
+                    </div>
+
+                    <!-- Hidden input untuk simpan isi editor -->
+                    <input type="hidden" name="description" id="description">
                 </div>
+
 
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                     <a href="<?= base_url(route_to('admin.products.index')) ?>" class="btn btn-secondary">Kembali</a>
@@ -94,9 +127,64 @@
 </div>
 <?= $this->endSection(); ?>
 
-<?= $this->section('foot_js'); ?>
+<?= $this->section('footer_js'); ?>
 <!-- Rich Editor Script -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tinymce@6.8.3/skins/ui/oxide/skin.min.css">
-<script src="https://cdn.jsdelivr.net/npm/tinymce@6.8.3/tinymce.min.js"></script>
-<script src="<?= base_url('js/rich-editor.js') ?>"></script>
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const uploadBox = document.getElementById("uploadBox");
+        const inputFile = document.getElementById("image");
+        const previewContainer = document.getElementById("previewContainer");
+        const previewImage = document.getElementById("previewImage");
+
+        const quill = new Quill('#editor', {
+            theme: 'snow',
+            placeholder: "Tulis deskripsi produk di sini...",
+        });
+
+        const hiddenInput = document.getElementById('description');
+        hiddenInput.value = quill.root.innerHTML;
+
+        quill.on('text-change', function() {
+            hiddenInput.value = quill.root.innerHTML;
+        });
+
+        uploadBox.addEventListener("click", () => inputFile.click());
+
+        inputFile.addEventListener("change", function() {
+            handleFile(this.files[0]);
+        });
+
+        uploadBox.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            uploadBox.classList.add("dragover");
+        });
+
+        uploadBox.addEventListener("dragleave", () => {
+            uploadBox.classList.remove("dragover");
+        });
+
+        uploadBox.addEventListener("drop", (e) => {
+            e.preventDefault();
+            uploadBox.classList.remove("dragover");
+
+            const file = e.dataTransfer.files[0];
+            if (file) {
+                inputFile.files = e.dataTransfer.files;
+                handleFile(file);
+            }
+        });
+
+        function handleFile(file) {
+            if (file && file.type.startsWith("image/")) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    previewContainer.classList.remove("d-none");
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    });
+</script>
 <?= $this->endSection(); ?>

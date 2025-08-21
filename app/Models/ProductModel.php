@@ -38,8 +38,8 @@ class ProductModel extends Model
 
     // Validation
     protected $validationRules = [
-        'name' => 'required|max_length[255]',
-        'slug' => 'required|max_length[255]',
+        'id' => 'permit_empty',
+        'name' => 'required|max_length[255]|is_unique[products.name,id,{id}]',
         'description' => 'permit_empty|max_length[1000]',
         'price' => 'required|numeric',
         'stock' => 'required|integer',
@@ -47,7 +47,8 @@ class ProductModel extends Model
     protected $validationMessages   = [
         'name' => [
             'required' => 'Nama produk wajib diisi!',
-            'max_length' => 'Panjang karakter melebihi dari yang ditentukan!'
+            'max_length' => 'Panjang karakter melebihi dari yang ditentukan!',
+            'is_unique' => 'Nama produk sudah digunakan!'
         ],
         'description' => [
             'max_length' => 'Karakter terlalu panjang!'
@@ -66,15 +67,24 @@ class ProductModel extends Model
 
     // Callbacks
     protected $allowCallbacks = true;
-    protected $beforeInsert   = [];
+    protected $beforeInsert   = ['generateSlug'];
     protected $afterInsert    = [];
-    protected $beforeUpdate   = [];
+    protected $beforeUpdate   = ['generateSlug'];
     protected $afterUpdate    = [];
     protected $beforeFind     = [];
     protected $afterFind      = ['convertJsonToArray'];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
+    protected function generateSlug(array $data)
+    {
+        if (isset($data['data']['name'])) {
+            $slug = url_title($data['data']['name'], '-', true);
+            $data['data']['slug'] = $slug;
+        }
+        return $data;
+    }
+    
     protected function convertJsonToArray(array $data)
     {
         if (isset($data['data'])) {

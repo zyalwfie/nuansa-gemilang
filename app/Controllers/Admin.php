@@ -83,73 +83,41 @@ class Admin extends BaseController
     public function storeProduct()
     {
         $postData = $this->request->getPost();
-        $postData['slug'] = url_title($postData['name'], '-', true);
+
+        $imageName = 'default-img-product.png';
 
         $imageFile = $this->request->getFile('image');
-        $additionalFiles = $this->request->getFileMultiple('additional_images');
+        if ($imageFile && $imageFile->isValid() && $imageFile->getError() === UPLOAD_ERR_OK) {
+            $allowedExt = ['jpg', 'jpeg', 'png', 'webp'];
+            if (!in_array($imageFile->getExtension(), $allowedExt)) {
+                return redirect()->back()->withInput()->with('error_image', 'Format gambar tidak valid!');
+            }
 
-        if ($imageFile->isValid()) {
-            $postData['image'] = 'image';
+            if ($imageFile->getSize() > 2097152) {
+                return redirect()->back()->withInput()->with('error_image', 'Ukuran gambar terlalu besar! Maksimal 2MB.');
+            }
+
+            $imageName = $imageFile->getRandomName();
         }
 
-        if (!empty($additionalFiles)) {
-            $postData['additional_images'] = 'additional_images';
-        }
-
-        if ($imageFile->getError() !== 0) {
-            return redirect()->back()->withInput()->with('error_image', 'Gambar harus diunggah!');
-        }
-
-        $allowedExt = ['jpg', 'jpeg', 'png', 'webp'];
-        if (!in_array($imageFile->getExtension(), $allowedExt)) {
-            return redirect()->back()->withInput()->with('error_image', 'Format gambar tidak valid!');
-        }
-
-        if ($imageFile->getSize() > 2097152) {
-            return redirect()->back()->withInput()->with('error_image', 'Ukuran gambar terlalu besar! Maksimal 2MB.');
-        }
+        $postData['image'] = $imageName;
 
         if (!$this->validateData($postData, $this->productModel->getValidationRules(), $this->productModel->validationMessages)) {
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
-        if (!$imageFile->hasMoved()) {
-            $tempName = $imageFile->getRandomName();
-            $tempPath = FCPATH . 'img/uploads/temp/' . $tempName;
-            $imageFile->move(FCPATH . 'img/uploads/temp', $tempName);
-
-            $noBgPath = removeBackground($tempPath);
-            @unlink($tempPath);
-
-            if (!$noBgPath) {
-                return redirect()->route('admin.products.create')->withInput()->with('error_image', 'Kesalahan teknis, coba unggah kembali!');
-            }
-
-            $postData['image'] = $noBgPath;
-        }
-
-        $additionalImageNames = [];
-        if (!empty($additionalFiles)) {
-            foreach ($additionalFiles as $file) {
-                if ($file->isValid() && !$file->hasMoved()) {
-                    $fileName = $file->getRandomName();
-                    $file->move(FCPATH . 'img/uploads/adds', $fileName);
-                    $additionalImageNames[] = $fileName;
-                }
-            }
-            $postData['additional_images'] = json_encode($additionalImageNames);
-        } else {
-            $postData['additional_images'] = null;
-        }
-
         $result = $this->productModel->save($postData);
 
         if ($result) {
+            if ($imageFile && $imageFile->isValid() && $imageFile->getError() === UPLOAD_ERR_OK && !$imageFile->hasMoved()) {
+                $imageFile->move(FCPATH . 'img/uploads/main', $imageName);
+            }
             return redirect()->route('admin.products.index')->with('success', 'Produk berhasil ditambahkan!');
         } else {
             return redirect()->route('admin.products.index')->with('failed', 'Produk gagal ditambahkan!');
         }
     }
+
 
     public function editProduct($slug)
     {
@@ -164,70 +132,43 @@ class Admin extends BaseController
     public function updateProduct($id)
     {
         $product = $this->productModel->find($id);
+        $oldImageName = $product['image'];
 
         $postData = $this->request->getPost();
-        $postData['slug'] = $product['name'] !== $postData['name'] ? url_title($postData['name'], '-', true) : $product['slug'];
+        $postData['id'] = $id;
 
         $imageFile = $this->request->getFile('image');
-        $additionalFiles = $this->request->getFileMultiple('additional_images');
 
         if ($imageFile && $imageFile->isValid() && $imageFile->getError() === 0) {
             $allowedExt = ['jpg', 'jpeg', 'png', 'webp'];
+            $newImageName = $imageFile->getRandomName();
             if (!in_array($imageFile->getExtension(), $allowedExt)) {
                 return redirect()->back()->withInput()->with('error_image', 'Format gambar tidak valid!');
             }
             if ($imageFile->getSize() > 2097152) {
                 return redirect()->back()->withInput()->with('error_image', 'Ukuran gambar terlalu besar! Maksimal 2MB.');
             }
-            if (!$imageFile->hasMoved()) {
-                $tempName = $imageFile->getRandomName();
-                $tempPath = FCPATH . 'img/uploads/temp/' . $tempName;
-                $imageFile->move(FCPATH . 'img/uploads/temp', $tempName);
-
-                $noBgPath = removeBackground($tempPath);
-                @unlink($tempPath);
-
-                if (!$noBgPath) {
-                    return redirect()->back()->withInput()->with('error_image', 'Kesalahan teknis, coba unggah kembali!');
-                }
-
-                if (!empty($product['image']) && file_exists(FCPATH . $product['image']) && $product['image'] !== 'img/uploads/main/default-img-product.svg') {
-                    @unlink(FCPATH . $product['image']);
-                }
-
-                $postData['image'] = $noBgPath;
-            }
+            $postData['image'] = $newImageName;
         } else {
-            $postData['image'] = $product['image'];
-        }
-
-        $additionalImageNames = [];
-        if (!empty($additionalFiles)) {
-            foreach ($additionalFiles as $file) {
-                if ($file->isValid() && !$file->hasMoved()) {
-                    $fileName = $file->getRandomName();
-                    $file->move(FCPATH . 'img/uploads/adds', $fileName);
-                    $additionalImageNames[] = $fileName;
-                }
-            }
-            if (!empty($additionalImageNames)) {
-                $postData['additional_images'] = json_encode($additionalImageNames);
-            } else {
-                $postData['additional_images'] = $product['additional_images'];
-            }
-        } else {
-            $postData['additional_images'] = $product['additional_images'];
+            $postData['image'] = $oldImageName;
         }
 
         if (!$this->validateData($postData, $this->productModel->getValidationRules(), $this->productModel->validationMessages)) {
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
-        $postData['id'] = $id;
         $result = $this->productModel->save($postData);
 
         if ($result) {
-            return redirect()->route('admin.products.index')->with('success', 'Produk berhasil diperbarui!');
+            if (isset($newImageName)) {
+                $imageFile->move(FCPATH . 'img/uploads/main', $newImageName);
+                if ($oldImageName != 'default-img-product.png') {
+                    @unlink(FCPATH . 'img/uploads/main/' . $oldImageName);
+                }
+                return redirect()->route('admin.products.index')->with('success', 'Produk berhasil diperbarui!');
+            } else {
+                return redirect()->route('admin.products.index')->with('success', 'Produk berhasil diperbarui!');
+            }
         } else {
             return redirect()->route('admin.products.index')->with('failed', 'Produk gagal diperbarui!');
         }
@@ -621,17 +562,17 @@ class Admin extends BaseController
                 <div class="title">
                     <h2>Laporan Penjualan</h2>';
 
-            if ($startDate && $endDate) {
-                $html .= "<p>Periode: " . date('d F Y', strtotime($startDate)) . " - " . date('d F Y', strtotime($endDate)) . "</p>";
-            } elseif ($startDate) {
-                $html .= "<p>Mulai dari: " . date('d F Y', strtotime($startDate)) . "</p>";
-            } elseif ($endDate) {
-                $html .= "<p>Sampai dengan: " . date('d F Y', strtotime($endDate)) . "</p>";
-            } else {
-                $html .= "<p>Semua Periode</p>";
-            }
+        if ($startDate && $endDate) {
+            $html .= "<p>Periode: " . date('d F Y', strtotime($startDate)) . " - " . date('d F Y', strtotime($endDate)) . "</p>";
+        } elseif ($startDate) {
+            $html .= "<p>Mulai dari: " . date('d F Y', strtotime($startDate)) . "</p>";
+        } elseif ($endDate) {
+            $html .= "<p>Sampai dengan: " . date('d F Y', strtotime($endDate)) . "</p>";
+        } else {
+            $html .= "<p>Semua Periode</p>";
+        }
 
-            $html .= '
+        $html .= '
                 </div>
 
                 <!-- Summary -->
@@ -660,14 +601,14 @@ class Admin extends BaseController
                     </thead>
                     <tbody>';
 
-            if (empty($orders)) {
-                $html .= '
+        if (empty($orders)) {
+            $html .= '
                         <tr>
                             <td colspan="6" style="text-align:center;">Tidak ada data penjualan yang ditemukan.</td>
                         </tr>';
-            } else {
-                foreach ($orders as $index => $order) {
-                    $html .= "
+        } else {
+            foreach ($orders as $index => $order) {
+                $html .= "
                         <tr>
                             <td>" . ($index + 1) . "</td>
                             <td>" . date('d/m/Y', strtotime($order['created_at'])) . "</td>
@@ -676,10 +617,10 @@ class Admin extends BaseController
                             <td>" . htmlspecialchars($order['phone_number'] ?? '-') . "</td>
                             <td>Rp " . number_format($order['total_price'], 0, ',', '.') . "</td>
                         </tr>";
-                }
             }
+        }
 
-            $html .= '
+        $html .= '
                     </tbody>
                 </table>
 

@@ -4,6 +4,20 @@
 <?= $page_title ?>
 <?= $this->endSection(); ?>
 
+<?= $this->section('head_css'); ?>
+<style>
+    .quill-content ol {
+        list-style-type: disc;
+        margin-left: 1.5rem;
+        padding-left: 1rem;
+    }
+
+    .quill-content ol li::before {
+        content: none !important;
+    }
+</style>
+<?= $this->endSection(); ?>
+
 <?= $this->section('content'); ?>
 <!-- Start Hero Section -->
 <div class="hero">
@@ -46,7 +60,7 @@
                     <span>/</span>
                     <small class="text-muted">Sisa stok <?= $product['stock'] ?></small>
                 </div>
-                <div class="mb-4">
+                <div class="mb-4 quill-content">
                     <?= $product['description'] ?>
                 </div>
                 <?php if (in_groups('admin')) : ?>

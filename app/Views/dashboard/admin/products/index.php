@@ -85,38 +85,44 @@
                     $start = ($page - 1) * $perPage;
                     $paginatedProducts = array_slice($filteredProducts, $start, $perPage);
                     $index = $start + 1;
-                    foreach ($paginatedProducts as $product) :
                     ?>
-                        <tr>
-                            <td><?= $index++ ?></td>
-                            <td><img src="<?= base_url() ?>img/uploads/main/<?= $product['image'] ?>" alt="<?= $product['name'] ?>" width="100"></td>
-                            <td><?= $product['name'] ?></td>
-                            <td>Rp<?= number_format($product['price'], '0', '.', ',') ?></td>
-                            <td><?= $product['stock'] ?></td>
-                            <td class="align-middle">
-                                <div class="d-flex align-items-center gap-1">
-                                    <div>
-                                        <button type="button" class="btn btn-info btn-detail-modal"
-                                            data-bs-toggle="modal" data-bs-target="#detailModal"
-                                            data-name="<?= esc($product['name']) ?>"
-                                            data-price="<?= esc($product['price']) ?>"
-                                            data-stock="<?= esc($product['stock']) ?>"
-                                            data-image="<?= base_url('img/uploads/main/' . $product['image']) ?>"
-                                            data-additional-images='<?= esc(json_encode($product['additional_images'])) ?>'
-                                            data-description="<?= esc($product['description']) ?>">
-                                            <i class="fas fa-faw fa-eye"></i>
+                    <?php if ($paginatedProducts) : ?>
+                        <?php foreach ($paginatedProducts as $product) : ?>
+                            <tr>
+                                <td class="align-middle"><?= $index++ ?></td>
+                                <td class="align-middle"><img src="<?= base_url() ?>img/uploads/main/<?= $product['image'] ?>" alt="<?= $product['name'] ?>" width="100"></td>
+                                <td class="align-middle"><?= $product['name'] ?></td>
+                                <td class="align-middle">Rp<?= number_format($product['price'], '0', '.', ',') ?></td>
+                                <td class="align-middle"><?= $product['stock'] ?></td>
+                                <td class="align-middle">
+                                    <div class="d-flex align-items-center gap-1">
+                                        <div>
+                                            <button type="button" class="btn btn-info btn-detail-modal"
+                                                data-bs-toggle="modal" data-bs-target="#detailModal"
+                                                data-name="<?= esc($product['name']) ?>"
+                                                data-price="<?= esc($product['price']) ?>"
+                                                data-stock="<?= esc($product['stock']) ?>"
+                                                data-image="<?= base_url('img/uploads/main/' . $product['image']) ?>"
+                                                data-additional-images='<?= esc(json_encode($product['additional_images'])) ?>'
+                                                data-description="<?= esc($product['description']) ?>">
+                                                <i class="fas fa-faw fa-eye"></i>
+                                            </button>
+                                        </div>
+                                        <div><a href="<?= base_url(route_to('admin.products.edit', $product['slug'])) ?>" class="btn btn-warning"><i class="fas fa-faw fa-pen"></i></a></div>
+                                        <button type="button" class="btn btn-danger btn-delete-modal"
+                                            data-bs-toggle="modal" data-bs-target="#confirmModal"
+                                            data-slug="<?= esc($product['slug']) ?>">
+                                            <i class="fas fa-fw fa-trash"></i>
                                         </button>
                                     </div>
-                                    <div><a href="<?= base_url(route_to('admin.products.edit', $product['slug'])) ?>" class="btn btn-warning"><i class="fas fa-faw fa-pen"></i></a></div>
-                                    <button type="button" class="btn btn-danger btn-delete-modal"
-                                        data-bs-toggle="modal" data-bs-target="#confirmModal"
-                                        data-slug="<?= esc($product['slug']) ?>">
-                                        <i class="fas fa-fw fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else : ?>
+                        <tr>
+                            <td colspan="6" class="text-center">Produk tidak ditemukan.</td>
                         </tr>
-                    <?php endforeach; ?>
+                    <?php endif; ?>
                 </tbody>
                 <tfoot>
                     <nav aria-label="Page navigation example">
@@ -171,23 +177,17 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="image" class="form-label">Gambar Utama</label>
+                    <label for="image" class="form-label">Gambar</label>
                     <div class="mt-2">
                         <img src="<?= base_url('img/default-img-product.svg') ?>" alt="Main Image" style="height: 150px; width: 150px; object-fit: cover;" class="img-thumbnail">
                     </div>
                 </div>
 
                 <div class="mb-3">
-                    <label for="additional_images" class="form-label">Gambar Lainnya <small class="text-muted">Opsional</small></label>
-                    <div class="d-flex flex-wrap gap-3 mt-2">
-                        <img src="<?= base_url('img/default-img-product.svg') ?>" alt="Additional Image" class="img-thumbnail" style="height: 150px; width: 150px; object-fit: cover;">
-                    </div>
+                    <label class="form-label">Deskripsi</label>
+                    <div id="description" style="min-height:100px; background:#fff; padding:10px; border:1px solid #ddd; border-radius:5px;"></div>
                 </div>
 
-                <div class="mb-3">
-                    <label for="description" class="form-label">Deskripsi</label>
-                    <div class="form-control" id="description" style="min-height:100px; background:#fff; overflow:auto"><?= $product['description'] ?></div>
-                </div>
             </div>
         </div>
     </div>
@@ -232,7 +232,7 @@
                 priceInput.value = this.dataset.price;
                 stockInput.value = this.dataset.stock;
                 imageTag.src = this.dataset.image;
-                descriptionTextarea.value = this.dataset.description;
+                descriptionTextarea.innerHTML = this.dataset.description;
 
                 let additionalImages = [];
                 try {

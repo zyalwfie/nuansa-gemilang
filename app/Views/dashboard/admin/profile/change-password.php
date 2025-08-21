@@ -9,7 +9,7 @@
     <div class="col-lg-6">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="<?= route_to('user.profile.index') ?>">Profil</a></li>
+                <li class="breadcrumb-item"><a href="<?= route_to('admin.profile.index') ?>">Profil</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Ganti Sandi</li>
             </ol>
         </nav>
